@@ -1,0 +1,7 @@
+{
+  "name": "SmartQuote ERP & Financials",
+  "description": "A comprehensive business management tool for quote automation, invoice tracking, cost analysis, and sales commission management with integrated AI insights.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
