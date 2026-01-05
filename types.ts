@@ -160,7 +160,6 @@ export interface QuoteLineItem {
   quantity: number;
   unitPrice: number;
   costOfGoodsSold: number;
-  description: string;
   // Flexible Payment Fields
   billingFrequency: BillingFrequency;
   contractMonths: number;

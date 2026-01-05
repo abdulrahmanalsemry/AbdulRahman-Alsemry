@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell
@@ -45,16 +46,14 @@ const Dashboard: React.FC<Props> = ({
 
     const quoteStartDate = new Date(quote.date);
     const quoteMY = `${quoteStartDate.getFullYear()}-${(quoteStartDate.getMonth() + 1).toString().padStart(2, '0')}`;
-    const discountRatio = quote.subtotal > 0 ? (quote.totalAmount / quote.subtotal) : 1;
 
     quote.items.forEach(item => {
       const lineTerm = item.billingFrequency === 'One-time' ? 1 : item.contractMonths;
       const totalLineRevenue = item.quantity * item.unitPrice * lineTerm;
       const totalLineCOGS = item.quantity * item.costOfGoodsSold * lineTerm;
       
-      // CALCULATION SYNC: Commission is now calculated based on Net Revenue (Gross - Discount)
-      const netLineRevenue = totalLineRevenue * discountRatio;
-      const totalLineComm = netLineRevenue * (quote.appliedCommissionRate / 100);
+      // CHANGE: Commission for this line is now calculated based on COGS
+      const totalLineComm = totalLineCOGS * (quote.appliedCommissionRate / 100);
       
       const monthlyCOGS = totalLineCOGS / lineTerm;
       const monthlyComm = totalLineComm / lineTerm;
@@ -468,7 +467,7 @@ const Dashboard: React.FC<Props> = ({
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData}>
                 <defs>
-                  <linearGradient id="colorProfit" x1="0" x2="0" y2="1">
+                  <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
                     <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
                   </linearGradient>
