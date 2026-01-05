@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useRef } from 'react';
 import { 
   Quote, Salesperson, SalespersonType, ServiceItem, QuoteStatus, 
@@ -76,6 +75,19 @@ const QuotesView: React.FC<Props> = ({
     exchangeRate: 1
   });
 
+  const groupedQuotes = useMemo(() => {
+    const groups: Record<string, Quote[]> = {};
+    quotes.forEach(q => {
+      const rootId = q.parentQuoteId || q.id;
+      groups[rootId] = groups[rootId] || [];
+      groups[rootId].push(q);
+    });
+    Object.keys(groups).forEach(key => {
+      groups[key].sort((a, b) => b.version - a.version);
+    });
+    return groups;
+  }, [quotes]);
+
   const derivedValues = useMemo(() => {
     const items = newQuote.items || [];
     const subtotal = items.reduce((sum, item) => {
@@ -115,8 +127,8 @@ const QuotesView: React.FC<Props> = ({
     const salesperson = team.find(t => t.id === newQuote.salespersonId);
     let appliedRate = salesperson ? salesperson.commissionRate : 0;
     
-    // CHANGE: Commission is now calculated from Total COGS amount as requested
-    const commissionAmount = totalCOGS * (appliedRate / 100);
+    // CALCULATION: Sales Commission is now calculated from (Gross Amount - Discount)
+    const commissionAmount = totalAmount * (appliedRate / 100);
 
     return { 
       subtotal, totalCOGS, totalAmount, commissionAmount, appliedRate, 
@@ -206,19 +218,6 @@ const QuotesView: React.FC<Props> = ({
       statusHistory: [...(q.statusHistory || []), { status: newStatus, timestamp: new Date().toLocaleString() }]
     } : q));
   };
-
-  const groupedQuotes = useMemo(() => {
-    const groups: Record<string, Quote[]> = {};
-    quotes.forEach(q => {
-      const rootId = q.parentQuoteId || q.id;
-      groups[rootId] = groups[rootId] || [];
-      groups[rootId].push(q);
-    });
-    Object.keys(groups).forEach(key => {
-      groups[key].sort((a, b) => b.version - a.version);
-    });
-    return groups;
-  }, [quotes]);
 
   const filteredGroups = useMemo(() => {
     return Object.entries(groupedQuotes).filter(([rootId, versions]) => {
@@ -318,7 +317,8 @@ const QuotesView: React.FC<Props> = ({
         <tr>
           <td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 12px; color: #334155;">
             <strong style="display: block; font-size: 12.5px; color: #1e293b;">${catalog.find(s => s.id === item.serviceId)?.name || 'Service'}</strong>
-            <div style="color: #64748b; font-size: 10px; margin-top: 2px;">
+            <div style="color: #64748b; font-size: 10px; margin-top: 2px; white-space: pre-wrap;">${item.description || ''}</div>
+            <div style="color: #64748b; font-size: 10px; margin-top: 4px; font-weight: 600; text-transform: uppercase;">
               ${item.billingFrequency} cycle ${isRecurring ? ` • ${item.contractMonths} months term` : ''}
             </div>
           </td>
@@ -332,7 +332,7 @@ const QuotesView: React.FC<Props> = ({
     const discountAmount = q.discountType === 'percentage' ? (q.subtotal * (q.discount / 100)) : q.discount;
     const discountRowHtml = q.discount > 0 ? `
       <div class="summary-row" style="color: #ef4444;">
-        <span>Special Discount (${q.discountType === 'percentage' ? q.discount + '%' : 'Fixed'}):</span>
+        <span>Discount (${q.discountType === 'percentage' ? q.discount + '%' : 'Fixed'}):</span>
         <span>-${formatMoney(discountAmount, q.currency)}</span>
       </div>
     ` : '';
@@ -348,10 +348,8 @@ const QuotesView: React.FC<Props> = ({
             @page { size: A4; margin: 0; }
             body { font-family: 'Inter', sans-serif; padding: 0; margin: 0; color: #1e293b; line-height: 1.25; font-size: 10.5px; background: transparent; width: 210mm; }
             .letterhead { position: fixed; top: 0; left: 0; width: 210mm; height: 297mm; z-index: -1; object-fit: fill; pointer-events: none; border: none; }
-            .container { padding: 160px 35px 60px 35px; position: relative; min-height: 297mm; box-sizing: border-box; }
-            .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-            .company h1 { margin: 0; color: #4f46e5; font-size: 19px; font-weight: 800; letter-spacing: -0.5px; }
-            .company p { margin: 1px 0 0 0; color: #64748b; font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+            .container { padding: 250px 35px 60px 35px; position: relative; min-height: 297mm; box-sizing: border-box; }
+            .header { display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 15px; }
             .meta { text-align: right; }
             .meta h2 { margin: 0; font-size: 14px; font-weight: 800; color: #1e293b; }
             .meta p { margin: 0; color: #94a3b8; font-size: 8.5px; font-weight: 600; text-transform: uppercase; }
@@ -379,7 +377,6 @@ const QuotesView: React.FC<Props> = ({
           ${letterhead ? (isPDF ? `<object data="${letterhead}" type="application/pdf" class="letterhead"></object>` : `<img src="${letterhead}" class="letterhead" alt="Letterhead" />`) : ''}
           <div class="container">
             <div class="header">
-              <div class="company"><h1>${companyName}</h1><p>OMAN'S SMART BUSINESS INTELLIGENCE SUITE</p></div>
               <div class="meta"><h2>PROPOSAL #${q.quoteNumber}</h2><p>Date: ${q.date} | Rev: V${q.version}</p></div>
             </div>
             <div class="info-grid">
@@ -387,7 +384,7 @@ const QuotesView: React.FC<Props> = ({
               <div class="info-box"><h3>Account Agent</h3><strong>${salesperson?.name || 'Authorized Agent'}</strong><p>Corporate Solutions</p></div>
             </div>
             <table><thead><tr><th style="width: 55%;">Service Item / Description</th><th style="text-align: center; width: 10%;">Qty</th><th style="text-align: right; width: 17%;">Rate</th><th style="text-align: right; width: 18%;">Net Value</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-            <div class="summary-container"><div class="summary-box"><div class="summary-row"><span>Subtotal Value:</span><span>${formatMoney(q.subtotal, q.currency)}</span></div>${discountRowHtml}<div class="summary-row total"><span>Project Commitment:</span><span class="total-value">${formatMoney(q.totalAmount, q.currency)}</span></div></div></div>
+            <div class="summary-container"><div class="summary-box"><div class="summary-row"><span>Gross Amount:</span><span>${formatMoney(q.subtotal, q.currency)}</span></div>${discountRowHtml}<div class="summary-row total"><span>Project Commitment:</span><span class="total-value">${formatMoney(q.totalAmount, q.currency)}</span></div></div></div>
             <div class="sections"><div><h4 class="section-title">Settlement Compliance & Terms</h4><pre class="section-content">${q.termsAndConditions || 'Standard 30-day validity applies.'}</pre></div><div><h4 class="section-title">Official Banking Credentials</h4><pre class="section-content">${bankDetails}</pre></div></div>
             <div class="footer"><p>Computer generated commercial proposal. Valid for 30 days from issue date.</p></div>
           </div>
@@ -412,7 +409,7 @@ const QuotesView: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest">
            <Filter size={14} /> Advanced Filters
         </div>
@@ -440,7 +437,7 @@ const QuotesView: React.FC<Props> = ({
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Date From</label>
-            <input type="date" className="w-full p-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold dark:text-slate-200" value={dateStartFilter} onChange={e => setDateStartFilter(e.target.value)} />
+            <input type="date" className="w-full p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm font-bold dark:text-slate-200" value={dateStartFilter} onChange={e => setDateStartFilter(e.target.value)} />
           </div>
           <div className="flex items-end">
             <button onClick={() => { setStatusFilter('all'); setClientFilter('all'); setSalespersonFilter('all'); setDateStartFilter(''); setDateEndFilter(''); }} className="w-full p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:text-red-500 transition-all border border-slate-200 dark:border-slate-700">
@@ -575,7 +572,11 @@ const QuotesView: React.FC<Props> = ({
                              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                                 {activeQuote.items.map((item, idx) => (
                                    <tr key={idx} className="text-sm">
-                                      <td className="px-6 py-4"><div className="font-black text-slate-800 dark:text-slate-100">{catalog.find(s => s.id === item.serviceId)?.name || 'Service Node'}</div><div className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase">{item.billingFrequency} cycle</div></td>
+                                      <td className="px-6 py-4">
+                                        <div className="font-black text-slate-800 dark:text-slate-100">{catalog.find(s => s.id === item.serviceId)?.name || 'Service Node'}</div>
+                                        <div className="text-[10px] text-slate-500 dark:text-slate-400 italic mb-1">{item.description}</div>
+                                        <div className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase">{item.billingFrequency} cycle</div>
+                                      </td>
                                       <td className="px-6 py-4 text-center font-bold dark:text-slate-300">{item.quantity}</td>
                                       <td className="px-6 py-4 text-right font-medium text-slate-500 dark:text-slate-400">{formatMoney(item.unitPrice, activeQuote.currency)}</td>
                                       <td className="px-6 py-4 text-right font-black text-indigo-600 dark:text-indigo-400">{formatMoney(item.quantity * item.unitPrice * (item.billingFrequency === 'One-time' ? 1 : item.contractMonths), activeQuote.currency)}</td>
@@ -636,12 +637,12 @@ const QuotesView: React.FC<Props> = ({
                   <div className="space-y-4">
                      {(newQuote.items || []).map((item, idx) => (
                        <div key={idx} className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative group space-y-6">
-                          <div className="grid grid-cols-12 gap-6">
+                          <div className="grid grid-cols-12 gap-6 items-start">
                              <div className="col-span-12 md:col-span-4 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Service Entity</label>
                                 <select className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold dark:text-slate-100" value={item.serviceId} onChange={e => {
                                   const s = catalog.find(sv => sv.id === e.target.value);
-                                  if (s) handleLineItemUpdate(idx, { serviceId: s.id, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1 });
+                                  if (s) handleLineItemUpdate(idx, { serviceId: s.id, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, description: s.description, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1 });
                                 }}>{catalog.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select>
                              </div>
                              <div className="col-span-6 md:col-span-2 space-y-1">
@@ -650,13 +651,25 @@ const QuotesView: React.FC<Props> = ({
                              </div>
                              <div className="col-span-6 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Unit Value</label>
-                                <input type="number" className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-black text-indigo-600 dark:text-indigo-400" value={item.unitPrice} onChange={e => handleLineItemUpdate(idx, { unitPrice: parseFloat(e.target.value) || 0 })} />
+                                <input type="number" className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-black text-indigo-600 dark:text-indigo-400" value={item.unitPrice} onChange={e => handleLineItemUpdate(idx, { unitPrice: parseFloat(e.target.value) || 0 })} />
                              </div>
                              <div className="col-span-12 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Unit Delta (COGS)</label>
                                 <input type="number" className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold text-amber-600 dark:text-amber-400" value={item.costOfGoodsSold} onChange={e => handleLineItemUpdate(idx, { costOfGoodsSold: parseFloat(e.target.value) || 0 })} />
                              </div>
-                             <div className="col-span-12 md:col-span-4 space-y-1">
+                             
+                             {/* Line Item Description Field */}
+                             <div className="col-span-12 space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Service Scope / Description</label>
+                                <textarea 
+                                  className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-medium dark:text-slate-100 h-20 outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/10 transition-all text-sm resize-none"
+                                  value={item.description}
+                                  placeholder="Detail specific deliverables for this item..."
+                                  onChange={e => handleLineItemUpdate(idx, { description: e.target.value })}
+                                />
+                             </div>
+
+                             <div className="col-span-12 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Billing cycle</label>
                                 <select className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold dark:text-slate-100" value={item.billingFrequency} onChange={e => handleLineItemUpdate(idx, { billingFrequency: e.target.value as any })}>
                                    <option value="One-time">One-time Settlement</option>
@@ -669,17 +682,18 @@ const QuotesView: React.FC<Props> = ({
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Term (Months)</label>
                                 <input type="number" disabled={item.billingFrequency === 'One-time'} className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold disabled:opacity-30 dark:text-slate-100" value={item.contractMonths} onChange={e => handleLineItemUpdate(idx, { contractMonths: parseInt(e.target.value) || 1 })} />
                              </div>
-                             <div className="col-span-6 md:col-span-3 space-y-1">
+                             <div className="col-span-12 md:col-span-4 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Advance Commitment</label>
                                 <div className="flex gap-2">
-                                  <input type="number" className="flex-1 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 font-black text-emerald-600 dark:text-emerald-400" value={item.downpayment} onChange={e => handleLineItemUpdate(idx, { downpayment: parseFloat(e.target.value) || 0 })} />
-                                  <select className="w-16 p-2 rounded-xl bg-slate-50 dark:bg-slate-700 text-xs font-black" value={item.downpaymentType} onChange={e => handleLineItemUpdate(idx, { downpaymentType: e.target.value as any })}>
+                                  <input type="number" className="flex-1 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-black text-emerald-600 dark:text-emerald-400" value={item.downpayment} onChange={e => handleLineItemUpdate(idx, { downpayment: parseFloat(e.target.value) || 0 })} />
+                                  <select className="w-20 p-2 rounded-xl bg-slate-50 dark:bg-slate-700 text-xs font-black" value={item.downpaymentType} onChange={e => handleLineItemUpdate(idx, { downpaymentType: e.target.value as any })}>
                                      <option value="fixed">{baseCurrency}</option>
                                      <option value="percentage">%</option>
                                   </select>
                                 </div>
                              </div>
-                             <div className="col-span-12 md:col-span-3 flex items-end">
+                             <div className="col-span-12 md:col-span-3 space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Performance Insight</label>
                                 <div className="w-full p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 flex justify-between items-center">
                                    <span className="text-[9px] font-black uppercase text-indigo-600 dark:text-indigo-400">Line ROI</span>
                                    <span className="text-sm font-black text-indigo-700 dark:text-indigo-300">
@@ -691,7 +705,7 @@ const QuotesView: React.FC<Props> = ({
                           <button onClick={() => setNewQuote({...newQuote, items: (newQuote.items || []).filter((_, i) => i !== idx)})} className="absolute -top-3 -right-3 w-10 h-10 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-full flex items-center justify-center text-slate-300 dark:text-slate-500 hover:text-red-500 shadow-xl opacity-0 group-hover:opacity-100 transition-all"><X size={20}/></button>
                        </div>
                      ))}
-                     <button onClick={() => { const s = catalog[0]; setNewQuote({...newQuote, items: [...(newQuote.items || []), { serviceId: s.id, quantity: 1, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1, downpayment: 0, downpaymentType: 'fixed' }]}) }} className="w-full py-6 rounded-[2.5rem] border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500 hover:border-indigo-400 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                     <button onClick={() => { const s = catalog[0]; setNewQuote({...newQuote, items: [...(newQuote.items || []), { serviceId: s.id, quantity: 1, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, description: s.description, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1, downpayment: 0, downpaymentType: 'fixed' }]}) }} className="w-full py-6 rounded-[2.5rem] border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500 hover:border-indigo-400 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
                         <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-xl group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30"><Plus size={24}/></div>
                         <span className="font-black uppercase text-[10px] tracking-widest">Inject Line Item Node</span>
                      </button>
@@ -734,11 +748,12 @@ const QuotesView: React.FC<Props> = ({
                      <div className="space-y-6">
                         <div className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Projection Summary</div>
                         <div className="space-y-3">
-                           <div className="flex justify-between items-center text-sm font-medium opacity-60"><span>Gross Delta Strategy:</span><span>{formatMoney(derivedValues.subtotal)}</span></div>
-                           <div className="flex justify-between items-center text-sm font-medium text-red-400"><span>Global Correction:</span><span>-{formatMoney(derivedValues.discAmount)}</span></div>
-                           <div className="flex justify-between items-center text-sm font-medium text-amber-400"><span>Overhead Factor ({derivedValues.appliedRate}%):</span><span>-{formatMoney(derivedValues.commissionAmount)}</span></div>
+                           <div className="flex justify-between items-center text-sm font-medium opacity-60"><span>Gross Amount:</span><span>{formatMoney(derivedValues.subtotal)}</span></div>
+                           <div className="flex justify-between items-center text-sm font-medium text-red-400"><span>Discount:</span><span>-{formatMoney(derivedValues.discAmount)}</span></div>
+                           <div className="flex justify-between items-center text-sm font-medium text-slate-400"><span>COGS:</span><span>-{formatMoney(derivedValues.totalCOGS)}</span></div>
+                           <div className="flex justify-between items-center text-sm font-medium text-amber-400"><span>Sales Commission ({derivedValues.appliedRate}%):</span><span>-{formatMoney(derivedValues.commissionAmount)}</span></div>
                            <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                              <span className="text-xs font-black uppercase">Net Asset Contribution:</span>
+                              <span className="text-xs font-black uppercase">Net Amount:</span>
                               <span className="text-3xl font-black text-emerald-400">{formatMoney(derivedValues.netProfit)}</span>
                            </div>
                         </div>
