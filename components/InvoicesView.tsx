@@ -208,7 +208,7 @@ const InvoicesView: React.FC<Props> = ({ invoices, setInvoices, clients, team, q
               width: 210mm;
             }
             .print-container {
-              padding: 160px 40px 60px 40px;
+              padding: 250px 40px 60px 40px;
               min-height: 297mm;
               position: relative;
               box-sizing: border-box;
@@ -224,9 +224,7 @@ const InvoicesView: React.FC<Props> = ({ invoices, setInvoices, clients, team, q
               pointer-events: none; 
               border: none;
             }
-            .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; padding-bottom: 20px; }
-            .company-info h1 { margin: 0; color: #4f46e5; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-            .company-info p { margin: 4px 0 0 0; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 9px; }
+            .header { display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 25px; padding-bottom: 20px; }
             .meta { text-align: right; }
             .meta h2 { margin: 0; color: #1e293b; font-size: 18px; font-weight: 800; }
             .meta p { margin: 2px 0; color: #94a3b8; font-weight: 700; }
@@ -257,7 +255,6 @@ const InvoicesView: React.FC<Props> = ({ invoices, setInvoices, clients, team, q
           ${letterhead ? (isPDF ? `<object data="${letterhead}" type="application/pdf" class="letterhead"></object>` : `<img src="${letterhead}" class="letterhead" alt="Letterhead" />`) : ''}
           <div class="print-container">
             <div class="header">
-              <div class="company-info"><h1>OFFICIAL INVOICE</h1><p>Oman's Smart Business Intelligence Suite</p></div>
               <div class="meta"><h2>INV # ${invoice.invoiceNumber}</h2><p>Issue Date: ${invoice.date}</p><p>Due Date: ${invoice.dueDate}</p></div>
             </div>
             <div class="status-banner">Current Settlement Status: ${invoice.status}</div>

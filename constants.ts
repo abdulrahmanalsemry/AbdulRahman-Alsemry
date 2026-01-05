@@ -82,6 +82,17 @@ export const INITIAL_USER_PROFILES: UserProfile[] = [
     activityLogs: [
       { id: 'l1', action: 'System Initialization', timestamp: '2023-10-20T08:00:00Z', details: 'Primary Super Admin account provisioned.' }
     ]
+  },
+  {
+    id: 'user-002',
+    email: 'accountant@gmail.com',
+    roleId: 'role-accountant',
+    status: UserStatus.ACTIVE,
+    createdAt: new Date().toISOString(),
+    lastActive: new Date().toISOString(),
+    activityLogs: [
+      { id: 'l2', action: 'System Provisioning', timestamp: new Date().toISOString(), details: 'Accountant profile initialized.' }
+    ]
   }
 ];
 
