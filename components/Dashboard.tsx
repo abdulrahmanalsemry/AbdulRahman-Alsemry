@@ -197,12 +197,12 @@ const Dashboard: React.FC<Props> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl"><Target size={24}/></div>
+                <div className="p-3 bg-primary-50 dark:bg-primary-900/30 text-primary-600 rounded-2xl"><Target size={24}/></div>
                 <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Visit Quota</span>
              </div>
              <div className="text-3xl font-black text-slate-900 dark:text-white">{monthlyVisits} / {visitTarget}</div>
              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
-                <div className="bg-indigo-600 h-full transition-all duration-1000" style={{ width: `${visitProgress}%` }} />
+                <div className="bg-primary-600 h-full transition-all duration-1000" style={{ width: `${visitProgress}%` }} />
              </div>
           </div>
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -221,14 +221,14 @@ const Dashboard: React.FC<Props> = ({
              <div className="text-3xl font-black text-slate-900 dark:text-white">{upcomingFollowUps.length} Pending</div>
              <p className="text-[9px] text-slate-400 font-bold uppercase mt-2">Next 7 days strategy</p>
           </div>
-          <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
+          <div className="bg-primary-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-primary-500/20 relative overflow-hidden">
              <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
-                   <TrendingUp size={24} className="text-indigo-200" />
+                   <TrendingUp size={24} className="text-primary-200" />
                    <span className="text-[10px] font-black uppercase tracking-widest">Efficiency</span>
                 </div>
                 <div className="text-3xl font-black">{(winsCount / (myLeads.length || 1) * 100).toFixed(1)}%</div>
-                <p className="text-[9px] text-indigo-200 font-bold uppercase mt-2">Global Scoreboard</p>
+                <p className="text-[9px] text-primary-200 font-bold uppercase mt-2">Global Scoreboard</p>
              </div>
           </div>
         </div>
@@ -236,20 +236,20 @@ const Dashboard: React.FC<Props> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
            <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
               <h3 className="text-xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3">
-                 <CalendarDays size={20} className="text-indigo-600" /> Upcoming Follow-ups
+                 <CalendarDays size={20} className="text-primary-600" /> Upcoming Follow-ups
               </h3>
               <div className="space-y-4">
                  {upcomingFollowUps.length > 0 ? upcomingFollowUps.map(l => (
-                   <div key={l.id} className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800 group hover:border-indigo-300 transition-all flex items-center justify-between">
+                   <div key={l.id} className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800 group hover:border-primary-300 transition-all flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-600 shadow-sm"><Footprints size={20}/></div>
+                         <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-primary-600 shadow-sm"><Footprints size={20}/></div>
                          <div>
                             <div className="font-black text-slate-800 dark:text-white">{l.companyName}</div>
                             <div className="text-[10px] text-slate-400 font-bold uppercase">Contact: {l.contactPerson}</div>
                          </div>
                       </div>
                       <div className="text-right">
-                         <div className="text-[10px] font-black uppercase text-indigo-600">{l.followUpDate}</div>
+                         <div className="text-[10px] font-black uppercase text-primary-600">{l.followUpDate}</div>
                          <div className="text-[8px] text-slate-400 font-bold uppercase">Scheduled Re-entry</div>
                       </div>
                    </div>
@@ -260,10 +260,10 @@ const Dashboard: React.FC<Props> = ({
            </div>
 
            <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden flex flex-col justify-between">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full -mr-32 -mt-32 blur-3xl" />
               <div className="relative z-10">
-                 <h3 className="text-xl font-black mb-2 flex items-center gap-2">Commercial Trajectory <Activity size={18} className="text-indigo-400"/></h3>
-                 <p className="text-indigo-200 text-sm mb-10">Real-time delta of your field conversions vs. approved project nodes.</p>
+                 <h3 className="text-xl font-black mb-2 flex items-center gap-2">Commercial Trajectory <Activity size={18} className="text-primary-400"/></h3>
+                 <p className="text-primary-200 text-sm mb-10">Real-time delta of your field conversions vs. approved project nodes.</p>
                  
                  <div className="space-y-6">
                     <div>
@@ -271,9 +271,9 @@ const Dashboard: React.FC<Props> = ({
                        <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden"><div className="bg-white h-full" style={{ width: `${visitProgress}%` }} /></div>
                     </div>
                     <div className="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 flex items-center gap-6">
-                       <div className="bg-indigo-600 p-4 rounded-2xl"><HandCoins size={28}/></div>
+                       <div className="bg-primary-600 p-4 rounded-2xl"><HandCoins size={28}/></div>
                        <div>
-                          <div className="text-[10px] font-black uppercase text-indigo-300">Projected Yield</div>
+                          <div className="text-[10px] font-black uppercase text-primary-300">Projected Yield</div>
                           <div className="text-2xl font-black">{formatMoney(quotes.reduce((s,q) => s + q.totalAmount, 0))}</div>
                        </div>
                     </div>
@@ -320,7 +320,7 @@ const Dashboard: React.FC<Props> = ({
                <div className="text-3xl font-black text-slate-900 dark:text-white">{formatMoney(totalOutflow)}</div>
                <p className="text-[9px] text-slate-500 font-black uppercase mt-2">Accrued Direct + OpEx</p>
             </div>
-            <div className={`p-8 rounded-[2.5rem] border shadow-xl relative overflow-hidden ${netProfit >= 0 ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-red-600 text-white border-red-500'}`}>
+            <div className={`p-8 rounded-[2.5rem] border shadow-xl relative overflow-hidden ${netProfit >= 0 ? 'bg-primary-600 text-white border-primary-500' : 'bg-red-600 text-white border-red-500'}`}>
                <div className="relative z-10">
                   <div className="flex items-center gap-4 mb-4">
                      <div className="p-3 bg-white/20 text-white rounded-2xl"><Banknote size={24}/></div>
@@ -336,7 +336,7 @@ const Dashboard: React.FC<Props> = ({
          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                <h3 className="text-xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3">
-                  <History size={20} className="text-indigo-600" /> Settlement Watchlist
+                  <History size={20} className="text-primary-600" /> Settlement Watchlist
                </h3>
                <div className="space-y-4">
                   {overdueInvoices.length > 0 ? overdueInvoices.slice(0, 5).map(inv => (
@@ -347,7 +347,7 @@ const Dashboard: React.FC<Props> = ({
                        </div>
                        <div className="text-right">
                           <div className="text-lg font-black text-red-600">{formatMoney(inv.totalAmount)}</div>
-                          <button onClick={onViewAllTransactions} className="text-[9px] font-black uppercase text-indigo-600 hover:underline">Mark Settlement</button>
+                          <button onClick={onViewAllTransactions} className="text-[9px] font-black uppercase text-primary-600 hover:underline">Mark Settlement</button>
                        </div>
                     </div>
                   )) : (
@@ -358,7 +358,7 @@ const Dashboard: React.FC<Props> = ({
 
             <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                <h3 className="text-xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3">
-                  <Briefcase size={20} className="text-indigo-600" /> Operational Overhead Distribution
+                  <Briefcase size={20} className="text-primary-600" /> Operational Overhead Distribution
                </h3>
                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
@@ -391,7 +391,7 @@ const Dashboard: React.FC<Props> = ({
   const stats = [
     { label: 'Total Revenue', value: formatMoney(totalRevenue), icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
     { label: 'Pending Quotes', value: quotes.filter(q => q.status !== 'Approved' && q.status !== 'Rejected').length, icon: FileCheck, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
-    { label: 'Orders Processed', value: invoices.length, icon: ShoppingCart, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
+    { label: 'Orders Processed', value: invoices.length, icon: ShoppingCart, color: 'text-primary-600', bg: 'bg-primary-50 dark:bg-primary-900/20' },
     { label: 'Net Profit', value: formatMoney(netProfit), icon: TrendingUp, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
   ];
 
@@ -424,7 +424,7 @@ const Dashboard: React.FC<Props> = ({
         <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex justify-between items-center mb-8">
              <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-                <HandCoins size={20} className="text-indigo-600" /> Revenue vs Outflow
+                <HandCoins size={20} className="text-primary-600" /> Revenue vs Outflow
              </h3>
              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Click column to audit</div>
           </div>
@@ -441,7 +441,7 @@ const Dashboard: React.FC<Props> = ({
                 />
                 <Bar 
                    dataKey="rev" 
-                   fill="#4f46e5" 
+                   fill="var(--primary-600)" 
                    radius={[4, 4, 0, 0]} 
                    name="Revenue" 
                    cursor="pointer"
@@ -469,8 +469,8 @@ const Dashboard: React.FC<Props> = ({
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorProfit" x1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--primary-600)" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="var(--primary-600)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="#94a3b8" axisLine={false} tickLine={false} dy={10} />
@@ -480,7 +480,7 @@ const Dashboard: React.FC<Props> = ({
                   itemStyle={{ color: '#f8fafc' }}
                   formatter={(value: number) => formatMoney(value)}
                 />
-                <Area type="monotone" dataKey="profit" stroke="#4f46e5" fillOpacity={1} fill="url(#colorProfit)" name="Net Profit" />
+                <Area type="monotone" dataKey="profit" stroke="var(--primary-600)" fillOpacity={1} fill="url(#colorProfit)" name="Net Profit" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -493,7 +493,7 @@ const Dashboard: React.FC<Props> = ({
            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
               <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10">
                  <div className="flex items-center gap-4">
-                    <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg">
+                    <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg">
                        <Search size={24} />
                     </div>
                     <div>
@@ -515,7 +515,7 @@ const Dashboard: React.FC<Props> = ({
                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Period Outflow</div>
                        <div className="text-2xl font-black text-red-600">{formatMoney(monthAuditDetails.totals.cogs + monthAuditDetails.totals.comm + monthAuditDetails.totals.opex)}</div>
                     </div>
-                    <div className="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-600/20 text-white">
+                    <div className="bg-primary-600 p-6 rounded-3xl shadow-xl shadow-primary-600/20 text-white">
                        <div className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Period Net Profit</div>
                        <div className="text-2xl font-black">{formatMoney(monthAuditDetails.totals.profit)}</div>
                     </div>
@@ -526,7 +526,7 @@ const Dashboard: React.FC<Props> = ({
                     {/* Revenue Ledger */}
                     <div className="space-y-4">
                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 px-2">
-                          <Receipt size={14} className="text-indigo-600" /> Revenue Invoices ({monthAuditDetails.invoices.length})
+                          <Receipt size={14} className="text-primary-600" /> Revenue Invoices ({monthAuditDetails.invoices.length})
                        </h4>
                        <div className="bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden">
                           <table className="w-full text-left text-xs">
@@ -566,7 +566,7 @@ const Dashboard: React.FC<Props> = ({
                        </div>
                        <div className="space-y-4">
                           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 px-2">
-                             <Briefcase size={14} className="text-indigo-500" /> Ledger Overhead (OpEx)
+                             <Briefcase size={14} className="text-primary-600" /> Ledger Overhead (OpEx)
                           </h4>
                           <div className="bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden">
                              <div className="max-h-[160px] overflow-y-auto custom-scrollbar">
@@ -604,11 +604,11 @@ const Dashboard: React.FC<Props> = ({
       <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <div className="p-10 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
           <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-             <History size={20} className="text-indigo-600" /> Recent Enterprise Activity
+             <History size={20} className="text-primary-600" /> Recent Enterprise Activity
           </h3>
           <button 
             onClick={onViewAllTransactions}
-            className="text-indigo-600 dark:text-indigo-400 text-xs font-black uppercase tracking-widest hover:underline flex items-center gap-2"
+            className="text-primary-600 dark:text-primary-400 text-xs font-black uppercase tracking-widest hover:underline flex items-center gap-2"
           >
             Ledger Overview <ChevronRight size={14}/>
           </button>

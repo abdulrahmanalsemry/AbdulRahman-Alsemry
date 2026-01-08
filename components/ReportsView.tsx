@@ -30,7 +30,6 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
     { name: 'Net Profit', value: Math.max(0, netProfit), color: '#10b981' },
   ];
 
-  // Commission Data Preparation
   const commissionSummary = useMemo(() => {
     return team.map(member => {
       const memberQuotes = approvedQuotes.filter(q => q.salespersonId === member.id);
@@ -43,7 +42,6 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
     }).filter(d => d.commission > 0 || d.revenue > 0);
   }, [team, approvedQuotes]);
 
-  // Monthly Commission Bar Chart Data
   const monthlyCommissionData = useMemo(() => {
     const months: Record<string, any> = {};
     
@@ -62,14 +60,13 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
     });
   }, [approvedQuotes, team]);
 
-  const COLORS = ['#4f46e5', '#8b5cf6', '#ec4899', '#f43f5e', '#ef4444', '#f59e0b', '#10b981', '#06b6d4'];
+  const COLORS = ['var(--primary-600)', '#8b5cf6', '#ec4899', '#f43f5e', '#ef4444', '#f59e0b', '#10b981', '#06b6d4'];
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Top Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="bg-indigo-50 dark:bg-indigo-900/30 p-3 rounded-xl text-indigo-600 dark:text-indigo-400"><Percent size={24} /></div>
+          <div className="bg-primary-50 dark:bg-primary-900/30 p-3 rounded-xl text-primary-600 dark:text-primary-400"><Percent size={24} /></div>
           <div>
             <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Total Commissions</div>
             <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{formatMoney(totalCommissions)}</div>
@@ -94,10 +91,9 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Commission Allocation Pie Chart */}
         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
-            <Percent size={20} className="text-indigo-600 dark:text-indigo-400" />
+            <Percent size={20} className="text-primary-600 dark:text-primary-400" />
             Commission Share by Salesperson
           </h3>
           <div className="h-80 w-full relative">
@@ -127,10 +123,9 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
           </div>
         </div>
 
-        {/* Financial Allocation Overview */}
         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
-            <TrendingUp size={20} className="text-indigo-600 dark:text-indigo-400" />
+            <TrendingUp size={20} className="text-primary-600 dark:text-primary-400" />
             Overall Revenue Allocation
           </h3>
           <div className="h-80 w-full relative">
@@ -161,10 +156,9 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
         </div>
       </div>
 
-      {/* Monthly Commission Bar Chart */}
       <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2">
-          <Users size={20} className="text-indigo-600 dark:text-indigo-400" />
+          <Users size={20} className="text-primary-600 dark:text-primary-400" />
           Monthly Commission Payouts
         </h3>
         <div className="h-96 w-full relative">
@@ -195,7 +189,6 @@ const ReportsView: React.FC<Props> = ({ quotes, invoices, expenses, team, format
         </div>
       </div>
 
-      {/* Detailed Project P&L Report */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <div className="p-8 border-b border-slate-100 dark:border-slate-800">
             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Detailed Project P&L Report</h3>

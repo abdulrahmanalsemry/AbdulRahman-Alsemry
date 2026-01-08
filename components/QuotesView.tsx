@@ -33,11 +33,12 @@ interface Props {
   exchangeRates: Record<string, number>;
   bankDetails: string;
   defaultTerms: string;
+  primaryColorHex?: string;
 }
 
 const QuotesView: React.FC<Props> = ({ 
   quotes, setQuotes, team, catalog, clients, setClients, leads, setLeads, setInvoices, invoices,
-  companyName, letterhead, formatMoney, baseCurrency, exchangeRates, bankDetails, defaultTerms 
+  companyName, letterhead, formatMoney, baseCurrency, exchangeRates, bankDetails, defaultTerms, primaryColorHex = '#4f46e5'
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'revise'>('create');
@@ -365,9 +366,9 @@ const QuotesView: React.FC<Props> = ({
             .summary-box { width: 250px; background: rgba(248, 250, 252, 0.8); padding: 10px 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
             .summary-row { display: flex; justify-content: space-between; padding: 2px 0; font-weight: 600; color: #64748b; font-size: 10.5px; }
             .summary-row.total { border-top: 1px solid #e2e8f0; margin-top: 6px; padding-top: 8px; color: #1e293b; font-weight: 800; font-size: 14px; }
-            .total-value { color: #4f46e5; }
+            .total-value { color: ${primaryColorHex}; }
             .sections { display: flex; flex-direction: column; gap: 10px; }
-            .section-title { font-size: 8.5px; font-weight: 800; text-transform: uppercase; color: #4f46e5; margin-bottom: 3px; border-bottom: 1px solid #f1f5f9; padding-bottom: 2px; }
+            .section-title { font-size: 8.5px; font-weight: 800; text-transform: uppercase; color: ${primaryColorHex}; margin-bottom: 3px; border-bottom: 1px solid #f1f5f9; padding-bottom: 2px; }
             .section-content { color: #64748b; font-size: 9.5px; white-space: pre-wrap; font-family: inherit; margin: 0; }
             .footer { margin-top: 25px; text-align: center; color: #94a3b8; font-size: 8.5px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
             @media print { .letterhead { display: block !important; -webkit-print-color-adjust: exact; } body { -webkit-print-color-adjust: exact; } }
@@ -380,7 +381,7 @@ const QuotesView: React.FC<Props> = ({
               <div class="meta"><h2>PROPOSAL #${q.quoteNumber}</h2><p>Date: ${q.date} | Rev: V${q.version}</p></div>
             </div>
             <div class="info-grid">
-              <div class="info-box" style="border-left-color: #4f46e5;"><h3>Client Entity</h3><strong>${q.clientName}</strong><p>${client?.email || ''}</p></div>
+              <div class="info-box" style="border-left-color: ${primaryColorHex};"><h3>Client Entity</h3><strong>${q.clientName}</strong><p>${client?.email || ''}</p></div>
               <div class="info-box"><h3>Account Agent</h3><strong>${salesperson?.name || 'Authorized Agent'}</strong><p>Corporate Solutions</p></div>
             </div>
             <table><thead><tr><th style="width: 55%;">Service Item / Description</th><th style="text-align: center; width: 10%;">Qty</th><th style="text-align: right; width: 17%;">Rate</th><th style="text-align: right; width: 18%;">Net Value</th></tr></thead><tbody>${itemsHtml}</tbody></table>
@@ -404,13 +405,13 @@ const QuotesView: React.FC<Props> = ({
              <Bell size={14} className="text-slate-400 dark:text-slate-500" />
           </div>
         </div>
-        <button onClick={() => { resetForm(); setShowModal(true); }} className="bg-indigo-600 text-white px-8 py-3.5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 transition-all active:scale-95 flex items-center gap-2">
+        <button onClick={() => { resetForm(); setShowModal(true); }} className="bg-primary-600 text-white px-8 py-3.5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-primary-700 shadow-xl shadow-primary-500/30 transition-all active:scale-95 flex items-center gap-2">
           <Plus size={20} /> Create New Quote
         </button>
       </div>
 
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest">
+        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-black text-[10px] uppercase tracking-widest">
            <Filter size={14} /> Advanced Filters
         </div>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -457,19 +458,19 @@ const QuotesView: React.FC<Props> = ({
           const isApproved = activeQuote.status === QuoteStatus.APPROVED;
 
           return (
-            <div key={rootId} className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-indigo-400 dark:border-indigo-600 shadow-2xl' : 'border-slate-100 dark:border-slate-800 shadow-sm'}`}>
+            <div key={rootId} className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-primary-400 dark:border-primary-600 shadow-2xl' : 'border-slate-100 dark:border-slate-800 shadow-sm'}`}>
                <div onClick={() => setExpandedQuoteId(isExpanded ? null : rootId)} className="px-6 lg:px-10 py-6 lg:py-8 flex flex-col lg:flex-row lg:items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                   <div className="w-32 shrink-0">
                      <div className="flex items-center gap-2">
-                       <span className="text-xl font-black text-indigo-600 dark:text-indigo-400 leading-none">{activeQuote.quoteNumber}</span>
-                       <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-[9px] font-black rounded border border-indigo-100 dark:border-indigo-800">V{activeQuote.version}</span>
+                       <span className="text-xl font-black text-primary-600 dark:text-primary-400 leading-none">{activeQuote.quoteNumber}</span>
+                       <span className="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 text-[9px] font-black rounded border border-primary-100 dark:border-primary-800">V{activeQuote.version}</span>
                      </div>
                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-1.5">{activeQuote.date}</p>
                   </div>
                   <div className="flex-1 px-4 min-w-0"><div className="text-lg lg:text-xl font-black text-slate-800 dark:text-slate-100 truncate">{activeQuote.clientName}</div></div>
                   <div className="w-full lg:w-[180px] shrink-0 text-left lg:text-right mt-4 lg:mt-0 pr-0 lg:pr-4">
                      <div className="text-xl font-black text-slate-900 dark:text-slate-100 whitespace-nowrap leading-tight">{formatMoney(activeQuote.totalAmount, activeQuote.currency)}</div>
-                     <div className={`text-[10px] font-black uppercase tracking-tighter mt-0.5 ${parseInt(margin) > 50 ? 'text-emerald-600' : 'text-indigo-600 dark:text-indigo-400'}`}>ROI: {margin}%</div>
+                     <div className={`text-[10px] font-black uppercase tracking-tighter mt-0.5 ${parseInt(margin) > 50 ? 'text-emerald-600' : 'text-primary-600 dark:text-primary-400'}`}>ROI: {margin}%</div>
                   </div>
                   <div className="w-full lg:w-[110px] shrink-0 flex items-center justify-start lg:justify-center mt-3 lg:mt-0" onClick={e => e.stopPropagation()}>
                      <div className="relative group w-full max-w-[100px]">
@@ -477,7 +478,7 @@ const QuotesView: React.FC<Props> = ({
                           disabled={isApproved}
                           className={`appearance-none w-full pl-3 pr-6 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter border transition-all outline-none shadow-sm text-center truncate ${
                             activeQuote.status === QuoteStatus.APPROVED ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800 cursor-not-allowed opacity-80' :
-                            activeQuote.status === QuoteStatus.SENT ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 border-indigo-100 dark:border-indigo-800 cursor-pointer' :
+                            activeQuote.status === QuoteStatus.SENT ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 border-primary-100 dark:border-primary-800 cursor-pointer' :
                             activeQuote.status === QuoteStatus.REJECTED ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-100 dark:border-red-800 cursor-pointer' :
                             'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-100 dark:border-slate-700 cursor-pointer'
                           }`}
@@ -490,9 +491,9 @@ const QuotesView: React.FC<Props> = ({
                      </div>
                   </div>
                   <div className="w-full lg:w-[180px] shrink-0 flex items-center justify-end gap-2 mt-4 lg:mt-0" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setExpandedQuoteId(isExpanded ? null : rootId)} className={`p-2.5 rounded-xl shadow-lg transition-all active:scale-95 ${isExpanded ? 'bg-slate-800 dark:bg-slate-700 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`} title="View Details"><Eye size={18}/></button>
+                        <button onClick={() => setExpandedQuoteId(isExpanded ? null : rootId)} className={`p-2.5 rounded-xl shadow-lg transition-all active:scale-95 ${isExpanded ? 'bg-slate-800 dark:bg-slate-700 text-white' : 'bg-primary-600 text-white hover:bg-primary-700'}`} title="View Details"><Eye size={18}/></button>
                         <button disabled={isApproved} onClick={() => { setNewQuote({ ...activeQuote }); setModalMode('revise'); setShowModal(true); }} className={`p-2.5 rounded-xl transition-all border dark:border-slate-800 shadow-sm ${isApproved ? 'opacity-30 cursor-not-allowed text-slate-300 dark:text-slate-600 bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800' : 'text-slate-400 hover:text-amber-600 dark:text-slate-500 dark:hover:text-amber-400 bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800 hover:border-amber-200 dark:hover:border-amber-900'}`} title={isApproved ? "Approved quotes cannot be revised" : "Create Revision"}><RotateCcw size={18}/></button>
-                        <button onClick={() => generatePDF(activeQuote)} className="p-2.5 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 bg-slate-50 dark:bg-slate-800 rounded-xl transition-all border border-slate-100 dark:border-slate-800 shadow-sm" title="Generate PDF"><FileDown size={18}/></button>
+                        <button onClick={() => generatePDF(activeQuote)} className="p-2.5 text-slate-400 dark:text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 bg-slate-50 dark:bg-slate-800 rounded-xl transition-all border border-slate-100 dark:border-slate-800 shadow-sm" title="Generate PDF"><FileDown size={18}/></button>
                         {!isApproved && <button onClick={() => { setQuoteToConvert(activeQuote); setShowConvertModal(true); }} className="p-2.5 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-50 dark:bg-slate-800 rounded-xl transition-all border border-slate-100 dark:border-slate-800 shadow-sm" title="Convert to Invoice"><CheckCircle size={18}/></button>}
                   </div>
                </div>
@@ -501,7 +502,7 @@ const QuotesView: React.FC<Props> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4 border-t border-slate-100 dark:border-slate-800">
                        <div className="space-y-4">
                           <h5 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                             <History size={14} className="text-indigo-600" /> Revision Registry
+                             <History size={14} className="text-primary-600" /> Revision Registry
                           </h5>
                           <div className="flex flex-wrap gap-2">
                              {versions.map(v => (
@@ -510,8 +511,8 @@ const QuotesView: React.FC<Props> = ({
                                    onClick={(e) => { e.stopPropagation(); setActiveVersionIds({...activeVersionIds, [rootId]: v.id}); }}
                                    className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase transition-all border shadow-sm ${
                                       selectedVersionId === v.id 
-                                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-600/30' 
-                                      : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-100 dark:border-slate-700 hover:border-indigo-400'
+                                      ? 'bg-primary-600 text-white border-primary-600 shadow-primary-600/30' 
+                                      : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-100 dark:border-slate-700 hover:border-primary-400'
                                    }`}
                                 >
                                    <div className="flex flex-col items-start leading-tight">
@@ -524,13 +525,13 @@ const QuotesView: React.FC<Props> = ({
                        </div>
                        <div className="space-y-4">
                           <h5 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                             <Activity size={14} className="text-indigo-600" /> Status Evolution
+                             <Activity size={14} className="text-primary-600" /> Status Evolution
                           </h5>
                           <div className="space-y-3">
                              {(activeQuote.statusHistory || []).map((h, idx) => (
                                 <div key={idx} className="flex items-center gap-4 group">
-                                   <div className="w-2 h-2 rounded-full bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.5)]"></div>
-                                   <div className="flex-1 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center group-hover:border-indigo-200 transition-all">
+                                   <div className="w-2 h-2 rounded-full bg-primary-600 shadow-[0_0_8px_rgba(79,70,229,0.5)]"></div>
+                                   <div className="flex-1 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center group-hover:border-primary-200 transition-all">
                                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-800 dark:text-slate-200">{h.status}</span>
                                       <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500">{h.timestamp}</span>
                                    </div>
@@ -556,14 +557,14 @@ const QuotesView: React.FC<Props> = ({
                           <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{formatMoney(activeQuote.commissionAmount, activeQuote.currency)}</div>
                           <p className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase">Effective Payout</p>
                        </div>
-                       <div className="bg-indigo-600 dark:bg-indigo-700 p-6 rounded-3xl shadow-xl space-y-3">
-                          <div className="flex items-center gap-2 text-indigo-200"><TrendingUp size={16} /><span className="text-[10px] font-black uppercase tracking-widest">Net Contribution</span></div>
+                       <div className="bg-primary-600 dark:bg-primary-700 p-6 rounded-3xl shadow-xl space-y-3">
+                          <div className="flex items-center gap-2 text-primary-200"><TrendingUp size={16} /><span className="text-[10px] font-black uppercase tracking-widest">Net Contribution</span></div>
                           <div className="text-2xl font-black text-white">{formatMoney(activeQuote.netProfit, activeQuote.currency)}</div>
-                          <p className="text-[9px] text-indigo-100/60 font-bold uppercase tracking-tight">Project Return</p>
+                          <p className="text-[9px] text-primary-100/60 font-bold uppercase tracking-tight">Project Return</p>
                        </div>
                     </div>
                     <div className="space-y-6">
-                       <h5 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2"><ListTree size={16} className="text-indigo-600 dark:text-indigo-400" /> Strategic Composition</h5>
+                       <h5 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2"><ListTree size={16} className="text-primary-600 dark:text-primary-400" /> Strategic Composition</h5>
                        <div className="bg-slate-50 dark:bg-slate-800/40 rounded-3xl border border-slate-100 dark:border-slate-700 overflow-hidden">
                           <table className="w-full text-left">
                              <thead className="bg-slate-100/50 dark:bg-slate-800/60 text-slate-400 dark:text-slate-500 text-[9px] font-black uppercase">
@@ -579,7 +580,7 @@ const QuotesView: React.FC<Props> = ({
                                       </td>
                                       <td className="px-6 py-4 text-center font-bold dark:text-slate-300">{item.quantity}</td>
                                       <td className="px-6 py-4 text-right font-medium text-slate-500 dark:text-slate-400">{formatMoney(item.unitPrice, activeQuote.currency)}</td>
-                                      <td className="px-6 py-4 text-right font-black text-indigo-600 dark:text-indigo-400">{formatMoney(item.quantity * item.unitPrice * (item.billingFrequency === 'One-time' ? 1 : item.contractMonths), activeQuote.currency)}</td>
+                                      <td className="px-6 py-4 text-right font-black text-primary-600 dark:text-primary-400">{formatMoney(item.quantity * item.unitPrice * (item.billingFrequency === 'One-time' ? 1 : item.contractMonths), activeQuote.currency)}</td>
                                    </tr>
                                 ))}
                              </tbody>
@@ -598,7 +599,7 @@ const QuotesView: React.FC<Props> = ({
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-7xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10">
               <div className="flex items-center gap-4">
-                 <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-500/20">{modalMode === 'revise' ? <RotateCcw size={24}/> : <FileText size={24} />}</div>
+                 <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg shadow-primary-500/20">{modalMode === 'revise' ? <RotateCcw size={24}/> : <FileText size={24} />}</div>
                  <div>
                     <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">{modalMode === 'revise' ? 'Version Evolution strategy' : 'Proposal Configuration Architect'}</h3>
                     <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{modalMode === 'edit' ? `Editing Ref: ${newQuote.quoteNumber}` : 'Drafting new commercial instrument'}</p>
@@ -616,7 +617,7 @@ const QuotesView: React.FC<Props> = ({
                          <option key={opt.id} value={opt.id}>{opt.type === 'Lead' ? '🟢 LEAD: ' : '🏢 CLIENT: '}{opt.name}</option>
                       ))}
                     </select>
-                    {leads.some(l => l.id === newQuote.clientId) && <div className="flex items-center gap-2 mt-2 ml-1 text-indigo-600 dark:text-indigo-400 font-bold text-[9px] uppercase"><Info size={12} /> This lead will convert to a Client upon saving.</div>}
+                    {leads.some(l => l.id === newQuote.clientId) && <div className="flex items-center gap-2 mt-2 ml-1 text-primary-600 dark:text-primary-400 font-bold text-[9px] uppercase"><Info size={12} /> This lead will convert to a Client upon saving.</div>}
                   </div>
                   <div className="space-y-1 md:col-span-3">
                     <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Representative Agent</label>
@@ -633,7 +634,7 @@ const QuotesView: React.FC<Props> = ({
                </div>
 
                <div className="space-y-4">
-                  <h4 className="text-xs font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-3"><Package size={16} className="text-indigo-600 dark:text-indigo-400"/> Resource Components & Lifecycle Configuration</h4>
+                  <h4 className="text-xs font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-3"><Package size={16} className="text-primary-600 dark:text-primary-400"/> Resource Components & Lifecycle Configuration</h4>
                   <div className="space-y-4">
                      {(newQuote.items || []).map((item, idx) => (
                        <div key={idx} className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative group space-y-6">
@@ -651,7 +652,7 @@ const QuotesView: React.FC<Props> = ({
                              </div>
                              <div className="col-span-6 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Unit Value</label>
-                                <input type="number" className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-black text-indigo-600 dark:text-indigo-400" value={item.unitPrice} onChange={e => handleLineItemUpdate(idx, { unitPrice: parseFloat(e.target.value) || 0 })} />
+                                <input type="number" className="w-full p-4 rounded-2xl border border-primary-200 dark:border-primary-700 bg-slate-50 dark:bg-slate-900 font-black text-primary-600 dark:text-primary-400" value={item.unitPrice} onChange={e => handleLineItemUpdate(idx, { unitPrice: parseFloat(e.target.value) || 0 })} />
                              </div>
                              <div className="col-span-12 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Unit Delta (COGS)</label>
@@ -662,7 +663,7 @@ const QuotesView: React.FC<Props> = ({
                              <div className="col-span-12 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Service Scope / Description</label>
                                 <textarea 
-                                  className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-medium dark:text-slate-100 h-20 outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/10 transition-all text-sm resize-none"
+                                  className="w-full p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-medium dark:text-slate-100 h-20 outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/10 transition-all text-sm resize-none"
                                   value={item.description}
                                   placeholder="Detail specific deliverables for this item..."
                                   onChange={e => handleLineItemUpdate(idx, { description: e.target.value })}
@@ -685,7 +686,7 @@ const QuotesView: React.FC<Props> = ({
                              <div className="col-span-12 md:col-span-4 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Advance Commitment</label>
                                 <div className="flex gap-2">
-                                  <input type="number" className="flex-1 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-black text-emerald-600 dark:text-emerald-400" value={item.downpayment} onChange={e => handleLineItemUpdate(idx, { downpayment: parseFloat(e.target.value) || 0 })} />
+                                  <input type="number" className="flex-1 p-4 rounded-2xl border border-primary-200 dark:border-primary-700 bg-white dark:bg-slate-900 font-black text-emerald-600 dark:text-emerald-400" value={item.downpayment} onChange={e => handleLineItemUpdate(idx, { downpayment: parseFloat(e.target.value) || 0 })} />
                                   <select className="w-20 p-2 rounded-xl bg-slate-50 dark:bg-slate-700 text-xs font-black" value={item.downpaymentType} onChange={e => handleLineItemUpdate(idx, { downpaymentType: e.target.value as any })}>
                                      <option value="fixed">{baseCurrency}</option>
                                      <option value="percentage">%</option>
@@ -694,9 +695,9 @@ const QuotesView: React.FC<Props> = ({
                              </div>
                              <div className="col-span-12 md:col-span-3 space-y-1">
                                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Performance Insight</label>
-                                <div className="w-full p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 flex justify-between items-center">
-                                   <span className="text-[9px] font-black uppercase text-indigo-600 dark:text-indigo-400">Line ROI</span>
-                                   <span className="text-sm font-black text-indigo-700 dark:text-indigo-300">
+                                <div className="w-full p-4 bg-primary-50 dark:bg-primary-900/20 rounded-2xl border border-primary-100 dark:border-primary-800/50 flex justify-between items-center">
+                                   <span className="text-[9px] font-black uppercase text-primary-600 dark:text-primary-400">Line ROI</span>
+                                   <span className="text-sm font-black text-primary-700 dark:text-primary-300">
                                       {(((item.unitPrice - item.costOfGoodsSold) / (item.unitPrice || 1)) * 100).toFixed(0)}%
                                    </span>
                                 </div>
@@ -705,8 +706,8 @@ const QuotesView: React.FC<Props> = ({
                           <button onClick={() => setNewQuote({...newQuote, items: (newQuote.items || []).filter((_, i) => i !== idx)})} className="absolute -top-3 -right-3 w-10 h-10 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-full flex items-center justify-center text-slate-300 dark:text-slate-500 hover:text-red-500 shadow-xl opacity-0 group-hover:opacity-100 transition-all"><X size={20}/></button>
                        </div>
                      ))}
-                     <button onClick={() => { const s = catalog[0]; setNewQuote({...newQuote, items: [...(newQuote.items || []), { serviceId: s.id, quantity: 1, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, description: s.description, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1, downpayment: 0, downpaymentType: 'fixed' }]}) }} className="w-full py-6 rounded-[2.5rem] border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500 hover:border-indigo-400 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
-                        <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-xl group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30"><Plus size={24}/></div>
+                     <button onClick={() => { const s = catalog[0]; setNewQuote({...newQuote, items: [...(newQuote.items || []), { serviceId: s.id, quantity: 1, unitPrice: s.basePrice, costOfGoodsSold: s.baseCost, description: s.description, billingFrequency: s.type === 'Recurring' ? 'Monthly' : 'One-time', contractMonths: s.minContractMonths || 1, downpayment: 0, downpaymentType: 'fixed' }]}) }} className="w-full py-6 rounded-[2.5rem] border-4 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition-all group">
+                        <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-xl group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30"><Plus size={24}/></div>
                         <span className="font-black uppercase text-[10px] tracking-widest">Inject Line Item Node</span>
                      </button>
                   </div>
@@ -714,15 +715,15 @@ const QuotesView: React.FC<Props> = ({
 
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-1"><Percent size={14} className="text-indigo-600" /> Commercial Adjustments</h4>
+                    <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-1"><Percent size={14} className="text-primary-600" /> Commercial Adjustments</h4>
                     <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm grid grid-cols-3 gap-6">
                        <div className="col-span-2 space-y-1">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Adjustment Magnitude</label>
-                          <input type="number" className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-black text-red-600 dark:text-red-400 outline-none focus:ring-4 focus:ring-indigo-100" value={newQuote.discount} onChange={e => setNewQuote({...newQuote, discount: parseFloat(e.target.value) || 0})} />
+                          <input type="number" className="w-full p-4 rounded-2xl border border-primary-200 dark:border-primary-700 bg-white dark:bg-slate-800 font-black text-red-600 dark:text-red-400 outline-none focus:ring-4 focus:ring-primary-100" value={newQuote.discount} onChange={e => setNewQuote({...newQuote, discount: parseFloat(e.target.value) || 0})} />
                        </div>
                        <div className="space-y-1">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
-                          <select className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold dark:text-slate-100 outline-none" value={newQuote.discountType} onChange={e => setNewQuote({...newQuote, discountType: e.target.value as any})}>
+                          <select className="w-full p-4 rounded-2xl border border-primary-200 dark:border-primary-700 bg-slate-50 dark:bg-slate-800 font-bold dark:text-slate-100 outline-none" value={newQuote.discountType} onChange={e => setNewQuote({...newQuote, discountType: e.target.value as any})}>
                              <option value="fixed">Fixed</option>
                              <option value="percentage">% Percentage</option>
                           </select>
@@ -730,10 +731,10 @@ const QuotesView: React.FC<Props> = ({
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-1"><FileText size={14} className="text-indigo-600" /> Engagement Footprint</h4>
+                    <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-1"><FileText size={14} className="text-primary-600" /> Engagement Footprint</h4>
                     <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
                        <textarea 
-                          className="w-full p-6 rounded-[2rem] border-none bg-slate-50 dark:bg-slate-800/50 font-medium h-[120px] outline-none focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/20 transition-all dark:text-slate-300 resize-none text-sm" 
+                          className="w-full p-6 rounded-[2rem] border-none bg-slate-50 dark:bg-slate-800/50 font-medium h-[120px] outline-none focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/20 transition-all dark:text-slate-300 resize-none text-sm" 
                           placeholder="Quote validity, delivery terms, and legal footnotes..." 
                           value={newQuote.termsAndConditions} 
                           onChange={e => setNewQuote({...newQuote, termsAndConditions: e.target.value})} 
@@ -743,10 +744,10 @@ const QuotesView: React.FC<Props> = ({
                </div>
 
                <div className="bg-slate-900 dark:bg-slate-950 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
                      <div className="space-y-6">
-                        <div className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Projection Summary</div>
+                        <div className="text-[10px] font-black text-primary-300 uppercase tracking-[0.2em]">Projection Summary</div>
                         <div className="space-y-3">
                            <div className="flex justify-between items-center text-sm font-medium opacity-60"><span>Gross Amount:</span><span>{formatMoney(derivedValues.subtotal)}</span></div>
                            <div className="flex justify-between items-center text-sm font-medium text-red-400"><span>Discount:</span><span>-{formatMoney(derivedValues.discAmount)}</span></div>
@@ -760,11 +761,11 @@ const QuotesView: React.FC<Props> = ({
                      </div>
                      <div className="bg-white/5 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/10 flex flex-col justify-center gap-8">
                         <div>
-                           <div className="text-[9px] font-black text-indigo-200 uppercase tracking-widest opacity-60">Initial Flow</div>
+                           <div className="text-[9px] font-black text-primary-200 uppercase tracking-widest opacity-60">Initial Flow</div>
                            <div className="text-4xl font-black mt-1">{formatMoney(derivedValues.dueAtSigning)}</div>
                         </div>
                         <div>
-                           <div className="text-[9px] font-black text-indigo-200 uppercase tracking-widest opacity-60">Lifecycle Rate</div>
+                           <div className="text-[9px] font-black text-primary-200 uppercase tracking-widest opacity-60">Lifecycle Rate</div>
                            <div className="text-4xl font-black mt-1">{formatMoney(derivedValues.recurringAmount)}</div>
                         </div>
                      </div>
@@ -773,7 +774,7 @@ const QuotesView: React.FC<Props> = ({
             </div>
             <div className="p-8 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 bg-white dark:bg-slate-900 sticky bottom-0 z-10 shadow-2xl">
                <button onClick={() => setShowModal(false)} className="px-10 py-4 font-black uppercase tracking-widest text-xs text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all">Abort</button>
-               <button onClick={handleSaveQuote} className="bg-indigo-600 text-white px-14 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 shadow-2xl shadow-indigo-600/30 transition-all active:scale-95">Commit Strategy</button>
+               <button onClick={handleSaveQuote} className="bg-primary-600 text-white px-14 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-700 shadow-2xl shadow-primary-600/30 transition-all active:scale-95">Commit Strategy</button>
             </div>
           </div>
         </div>
@@ -802,8 +803,8 @@ const QuotesView: React.FC<Props> = ({
                         onClick={() => setPaymentTerms(term)}
                         className={`w-full p-4 rounded-2xl border text-left font-bold text-xs uppercase tracking-widest transition-all ${
                           paymentTerms === term 
-                          ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' 
-                          : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-indigo-300'
+                          ? 'bg-primary-600 border-primary-600 text-white shadow-lg' 
+                          : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary-300'
                         }`}
                       >
                          {term}

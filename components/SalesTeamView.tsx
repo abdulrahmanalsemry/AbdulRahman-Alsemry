@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Salesperson, SalespersonType, CommissionTier, Quote, Invoice, QuoteStatus, Lead } from '../types';
 import { 
@@ -125,7 +124,6 @@ const SalesTeamView: React.FC<Props> = ({
     resetForm();
   };
 
-  // If the user is a restricted salesperson, show their personal matrix
   if (isSalesRole && currentSalesperson) {
     const m = getMemberMetrics(currentSalesperson);
     const upcomingFollowUps = leads
@@ -136,20 +134,20 @@ const SalesTeamView: React.FC<Props> = ({
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
         <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
           <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
             <div className="flex items-center gap-6">
-              <div className="bg-indigo-600 p-5 rounded-3xl shadow-xl shadow-indigo-500/20">
+              <div className="bg-primary-600 p-5 rounded-3xl shadow-xl shadow-primary-500/20">
                 <Trophy size={48} className="text-amber-400" />
               </div>
               <div>
                 <h2 className="text-3xl font-black tracking-tighter">My Performance Matrix</h2>
-                <p className="text-indigo-200 font-medium">Tracking your commercial trajectory and field activity quotas.</p>
+                <p className="text-primary-200 font-medium">Tracking your commercial trajectory and field activity quotas.</p>
               </div>
             </div>
             <div className="bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 flex items-center gap-8 min-w-[320px]">
                <div className="flex-1">
-                  <div className="text-[10px] font-black uppercase text-indigo-300 tracking-widest mb-1">Invoiced Revenue</div>
+                  <div className="text-[10px] font-black uppercase text-primary-300 tracking-widest mb-1">Invoiced Revenue</div>
                   <div className="text-3xl font-black">{formatMoney(m.totalRevenue)}</div>
                </div>
                <div className="p-4 bg-emerald-500 rounded-2xl text-slate-900 shadow-lg shadow-emerald-500/20">
@@ -160,12 +158,11 @@ const SalesTeamView: React.FC<Props> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-           {/* Visit Quota Matrix */}
            <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
               <div className="space-y-2">
                  <div className="flex items-center justify-between">
                     <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                       <Target size={20} className="text-indigo-600" /> Visit Quota
+                       <Target size={20} className="text-primary-600" /> Visit Quota
                     </h3>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{m.monthlyVisits} / {m.visitTarget}</span>
                  </div>
@@ -176,7 +173,7 @@ const SalesTeamView: React.FC<Props> = ({
                  <div className="relative w-44 h-44">
                     <svg className="w-full h-full" viewBox="0 0 100 100">
                        <circle className="text-slate-100 dark:text-slate-800 stroke-current" strokeWidth="8" cx="50" cy="50" r="42" fill="transparent"></circle>
-                       <circle className="text-indigo-600 stroke-current transition-all duration-1000 ease-out" strokeWidth="8" strokeDasharray={`${m.visitProgress * 2.63}, 263.8`} strokeLinecap="round" cx="50" cy="50" r="42" fill="transparent" transform="rotate(-90 50 50)"></circle>
+                       <circle className="text-primary-600 stroke-current transition-all duration-1000 ease-out" strokeWidth="8" strokeDasharray={`${m.visitProgress * 2.63}, 263.8`} strokeLinecap="round" cx="50" cy="50" r="42" fill="transparent" transform="rotate(-90 50 50)"></circle>
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                        <span className="text-4xl font-black text-slate-800 dark:text-slate-100">{m.visitProgress.toFixed(0)}%</span>
@@ -188,7 +185,7 @@ const SalesTeamView: React.FC<Props> = ({
                        <Flame size={12} /> {m.visitTarget - m.monthlyVisits} visits remaining to target
                     </div>
                  ) : (
-                    <div className="mt-6 text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full border border-emerald-100 dark:border-emerald-800 flex items-center gap-2">
+                    <div className="mt-6 text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-full border border-emerald-100 dark:border-amber-800 flex items-center gap-2">
                        <Star size={12} /> Quota Achievement Unlocked
                     </div>
                  )}
@@ -197,7 +194,7 @@ const SalesTeamView: React.FC<Props> = ({
               <div className="grid grid-cols-2 gap-4">
                  <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 text-center">
                     <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Conversion</div>
-                    <div className="text-xl font-black text-indigo-600">{m.conversionRate.toFixed(1)}%</div>
+                    <div className="text-xl font-black text-primary-600">{m.conversionRate.toFixed(1)}%</div>
                  </div>
                  <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 text-center">
                     <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Wins</div>
@@ -206,21 +203,20 @@ const SalesTeamView: React.FC<Props> = ({
               </div>
            </div>
 
-           {/* Priority Follow-ups */}
            <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
               <div className="flex items-center justify-between mb-6">
                  <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                    <CalendarDays size={20} className="text-indigo-600" /> High-Priority Matrix
+                    <CalendarDays size={20} className="text-primary-600" /> High-Priority Matrix
                  </h3>
-                 <span className="bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-black px-3 py-1 rounded-full uppercase">Week 43</span>
+                 <span className="bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-[10px] font-black px-3 py-1 rounded-full uppercase">Week 43</span>
               </div>
               <div className="space-y-4 flex-1">
                  {upcomingFollowUps.length > 0 ? (
                     upcomingFollowUps.map(l => (
-                       <div key={l.id} className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800 group hover:border-indigo-400 transition-all cursor-pointer">
+                       <div key={l.id} className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800 group hover:border-primary-400 transition-all cursor-pointer">
                           <div className="flex justify-between items-start mb-2">
-                             <div className="font-black text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 truncate">{l.companyName}</div>
-                             <div className="text-[9px] font-black text-white bg-indigo-600 px-2 py-0.5 rounded-lg shadow-md">{l.followUpDate}</div>
+                             <div className="font-black text-slate-800 dark:text-slate-100 group-hover:text-primary-600 truncate">{l.companyName}</div>
+                             <div className="text-[9px] font-black text-white bg-primary-600 px-2 py-0.5 rounded-lg shadow-md">{l.followUpDate}</div>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
                              <UserCheck size={12} className="text-slate-300" /> {l.contactPerson}
@@ -234,32 +230,31 @@ const SalesTeamView: React.FC<Props> = ({
                     </div>
                  )}
               </div>
-              <div className="mt-8 bg-indigo-50 dark:bg-indigo-900/30 p-6 rounded-[2rem] border border-indigo-100 dark:border-indigo-800 flex items-start gap-4">
-                 <Lightbulb className="text-indigo-500 shrink-0 mt-1" size={20} />
-                 <p className="text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed font-medium">
+              <div className="mt-8 bg-primary-50 dark:bg-primary-900/30 p-6 rounded-[2rem] border border-primary-100 dark:border-primary-800 flex items-start gap-4">
+                 <Lightbulb className="text-primary-500 shrink-0 mt-1" size={20} />
+                 <p className="text-xs text-primary-900 dark:text-primary-200 leading-relaxed font-medium">
                     <span className="font-black">Strategy Tip:</span> Consistent follow-up within 48 hours of initial field visits increases conversion probability by 40% in the OMR market.
                  </p>
               </div>
            </div>
 
-           {/* Personal Gains & Audit */}
            <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
               <div className="space-y-6">
                  <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                    <Coins size={20} className="text-indigo-600" /> Commission Yield
+                    <Coins size={20} className="text-primary-600" /> Commission Yield
                  </h3>
                  
                  <div className="space-y-4">
                     <div className="bg-slate-900 dark:bg-slate-950 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-8 -mt-8"></div>
-                       <div className="text-[10px] font-black uppercase text-indigo-400 tracking-widest mb-1">Earned to Date</div>
+                       <div className="text-[10px] font-black uppercase text-primary-400 tracking-widest mb-1">Earned to Date</div>
                        <div className="text-3xl font-black">{formatMoney(m.totalCommission)}</div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">
                        <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
                           <div className="flex items-center gap-3">
-                             <div className="p-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 rounded-lg"><Activity size={16}/></div>
+                             <div className="p-2 bg-primary-100 dark:bg-primary-900/50 text-primary-600 rounded-lg"><Activity size={16}/></div>
                              <span className="text-[10px] font-black uppercase text-slate-500">Quotes Hub</span>
                           </div>
                           <span className="text-sm font-black dark:text-slate-100">{m.totalQuotes} Issued</span>
@@ -289,7 +284,6 @@ const SalesTeamView: React.FC<Props> = ({
     );
   }
 
-  // Manager/Admin View: The Team Matrix
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
@@ -299,13 +293,12 @@ const SalesTeamView: React.FC<Props> = ({
         </div>
         <button 
           onClick={handleOpenAdd}
-          className="bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center gap-2 hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 transition-all active:scale-95"
+          className="bg-primary-600 text-white px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center gap-2 hover:bg-primary-700 shadow-xl shadow-primary-500/30 transition-all active:scale-95"
         >
           <UserPlus size={18} /> Recruit Agent
         </button>
       </div>
 
-      {/* Team Comparative Ledger */}
       <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800">
@@ -324,7 +317,7 @@ const SalesTeamView: React.FC<Props> = ({
                 <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 font-black group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                      <div className="w-12 h-12 rounded-2xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 font-black group-hover:bg-primary-600 group-hover:text-white transition-all">
                         {t.name.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
@@ -337,11 +330,11 @@ const SalesTeamView: React.FC<Props> = ({
                     <div className="space-y-2 max-w-[180px]">
                       <div className="flex justify-between items-center text-[9px] font-black uppercase">
                         <span className="text-slate-400">{m.monthlyVisits} / {m.visitTarget} visits</span>
-                        <span className={m.visitProgress >= 100 ? 'text-emerald-500' : 'text-indigo-600'}>{m.visitProgress.toFixed(0)}%</span>
+                        <span className={m.visitProgress >= 100 ? 'text-emerald-500' : 'text-primary-600'}>{m.visitProgress.toFixed(0)}%</span>
                       </div>
                       <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-1000 ${m.visitProgress >= 100 ? 'bg-emerald-500' : 'bg-indigo-600'}`}
+                          className={`h-full transition-all duration-1000 ${m.visitProgress >= 100 ? 'bg-emerald-500' : 'bg-primary-600'}`}
                           style={{ width: `${m.visitProgress}%` }}
                         />
                       </div>
@@ -355,7 +348,7 @@ const SalesTeamView: React.FC<Props> = ({
                     <div className="flex justify-center">
                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase border tracking-widest ${
                          m.conversionRate > 30 ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 
-                         m.conversionRate > 15 ? 'bg-indigo-100 text-indigo-700 border-indigo-200' :
+                         m.conversionRate > 15 ? 'bg-primary-100 text-primary-700 border-primary-200' :
                          'bg-slate-100 text-slate-600 border-slate-200'
                        }`}>
                          {m.conversionRate.toFixed(1)}% Ratio
@@ -364,8 +357,8 @@ const SalesTeamView: React.FC<Props> = ({
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                      <button onClick={() => handleOpenAudit(t)} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-100 dark:border-slate-800 shadow-sm transition-all" title="Audit Performance"><History size={18}/></button>
-                      <button onClick={() => handleOpenEdit(t)} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-100 dark:border-slate-800 shadow-sm transition-all" title="Configure Agent"><Settings size={18}/></button>
+                      <button onClick={() => handleOpenAudit(t)} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 border border-slate-100 dark:border-slate-800 shadow-sm transition-all" title="Audit Performance"><History size={18}/></button>
+                      <button onClick={() => handleOpenEdit(t)} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 border border-slate-100 dark:border-slate-800 shadow-sm transition-all" title="Configure Agent"><Settings size={18}/></button>
                       <button onClick={() => { setMemberToDelete(t.id); setShowConfirmDelete(true); }} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-300 hover:text-red-500 border border-slate-100 dark:border-slate-800 shadow-sm transition-all"><Trash2 size={18}/></button>
                     </div>
                   </td>
@@ -376,16 +369,15 @@ const SalesTeamView: React.FC<Props> = ({
         </table>
       </div>
 
-      {/* Global Performance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-         <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-600/20 col-span-1 md:col-span-2 relative overflow-hidden">
+         <div className="bg-primary-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-primary-600/20 col-span-1 md:col-span-2 relative overflow-hidden">
             <TrendingUp className="absolute -bottom-4 -right-4 w-40 h-40 opacity-10" />
             <div className="relative z-10 space-y-4">
-               <div className="text-[10px] font-black uppercase tracking-widest text-indigo-200">Force Wide Efficiency</div>
+               <div className="text-[10px] font-black uppercase tracking-widest text-primary-200">Force Wide Efficiency</div>
                <div className="text-4xl font-black">
                   {(team.reduce((s,t) => s + getMemberMetrics(t).conversionRate, 0) / (team.length || 1)).toFixed(1)}% Avg Ratio
                </div>
-               <p className="text-sm font-medium text-indigo-100/70 max-w-sm leading-relaxed">Cross-agent analysis of closing capacity across the current lead registry.</p>
+               <p className="text-sm font-medium text-primary-100/70 max-w-sm leading-relaxed">Cross-agent analysis of closing capacity across the current lead registry.</p>
             </div>
          </div>
          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
@@ -407,7 +399,7 @@ const SalesTeamView: React.FC<Props> = ({
                </div>
             </div>
             <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
-               <div className="bg-indigo-600 h-full w-[68%]" />
+               <div className="bg-primary-600 h-full w-[68%]" />
             </div>
          </div>
       </div>
@@ -417,7 +409,7 @@ const SalesTeamView: React.FC<Props> = ({
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10">
               <div className="flex items-center gap-4">
-                <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg">
+                <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg">
                   <Settings size={24} />
                 </div>
                 <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
@@ -433,7 +425,7 @@ const SalesTeamView: React.FC<Props> = ({
                       <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
                       <input 
                         type="text" 
-                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 dark:focus:ring-indigo-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold"
+                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-50 dark:focus:ring-primary-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold"
                         placeholder="e.g. Salim Al-Abri"
                         value={member.name}
                         onChange={(e) => setMember({...member, name: e.target.value})}
@@ -443,7 +435,7 @@ const SalesTeamView: React.FC<Props> = ({
                       <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Account Email (Matrix Sync)</label>
                       <input 
                         type="email" 
-                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 dark:focus:ring-indigo-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold"
+                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-50 dark:focus:ring-primary-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold"
                         placeholder="agent@company.om"
                         value={member.email}
                         onChange={(e) => setMember({...member, email: e.target.value})}
@@ -455,7 +447,7 @@ const SalesTeamView: React.FC<Props> = ({
                    <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Model</label>
                       <select 
-                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 dark:focus:ring-indigo-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold appearance-none"
+                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-50 dark:focus:ring-primary-900/10 bg-white dark:bg-slate-800 dark:text-white transition-all font-bold appearance-none"
                         value={member.type}
                         onChange={(e) => setMember({...member, type: e.target.value as SalespersonType})}
                       >
@@ -466,7 +458,7 @@ const SalesTeamView: React.FC<Props> = ({
                       <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Monthly Lead Target</label>
                       <input 
                         type="number" 
-                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-indigo-600"
+                        className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-primary-600"
                         value={member.monthlyLeadsTarget}
                         onChange={(e) => setMember({...member, monthlyLeadsTarget: parseInt(e.target.value) || 0})}
                       />
@@ -494,7 +486,7 @@ const SalesTeamView: React.FC<Props> = ({
                           <label className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Base Rate (%)</label>
                           <input 
                             type="number" 
-                            className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-black text-indigo-600 dark:text-indigo-400"
+                            className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-black text-primary-600 dark:text-primary-400"
                             value={member.commissionRate}
                             onChange={(e) => setMember({...member, commissionRate: parseFloat(e.target.value) || 0})}
                           />
@@ -517,12 +509,12 @@ const SalesTeamView: React.FC<Props> = ({
                 <div className="space-y-6">
                    <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
                       <h4 className="font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] flex items-center gap-2">
-                        <TrendingUp size={16} className="text-indigo-500" /> TIERED COMMISSION SCALING
+                        <TrendingUp size={16} className="text-primary-500" /> TIERED COMMISSION SCALING
                       </h4>
                       <button onClick={() => {
                         const details = member.commissionDetails || { tieredRates: [], performanceBonusThreshold: 0, performanceBonusAmount: 0 };
                         setMember({...member, commissionDetails: {...details, tieredRates: [...(details.tieredRates || []), { threshold: 0, rate: 0 }]}});
-                      }} className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-1 hover:underline">
+                      }} className="text-[9px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest flex items-center gap-1 hover:underline">
                          <Plus size={14} /> Add Threshold
                       </button>
                    </div>
@@ -548,7 +540,7 @@ const SalesTeamView: React.FC<Props> = ({
                                  <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Rate (%)</label>
                                  <input 
                                    type="number" 
-                                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-black text-indigo-600"
+                                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-black text-primary-600"
                                    placeholder="8"
                                    value={tier.rate}
                                    onChange={e => {
@@ -577,7 +569,7 @@ const SalesTeamView: React.FC<Props> = ({
 
             <div className="p-8 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-4 bg-white dark:bg-slate-900 sticky bottom-0 z-10 shadow-2xl">
                 <button onClick={() => setShowAdd(false)} className="px-10 py-4 font-black uppercase tracking-widest text-xs text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all">Cancel</button>
-                <button onClick={handleSave} className="bg-indigo-600 text-white px-14 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 shadow-2xl shadow-indigo-600/30 transition-all active:scale-95">
+                <button onClick={handleSave} className="bg-primary-600 text-white px-14 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-700 shadow-2xl shadow-primary-600/30 transition-all active:scale-95">
                   Deploy to Force
                 </button>
             </div>
@@ -616,11 +608,11 @@ const SalesTeamView: React.FC<Props> = ({
                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Total Quotes Issued</p>
                         </div>
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-                           <div className="flex items-center gap-2 text-indigo-600">
+                           <div className="flex items-center gap-2 text-primary-600">
                               <UserCheck size={14} />
                               <span className="text-[9px] font-black uppercase tracking-widest">Conversion</span>
                            </div>
-                           <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{m.conversionRate.toFixed(1)}%</div>
+                           <div className="text-2xl font-black text-primary-600 dark:text-primary-400">{m.conversionRate.toFixed(1)}%</div>
                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{m.winsCount} Wins / {m.totalLeadsCount} Leads</p>
                         </div>
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
@@ -631,13 +623,13 @@ const SalesTeamView: React.FC<Props> = ({
                            <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">{formatMoney(m.totalRevenue)}</div>
                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Value Invoiced</p>
                         </div>
-                        <div className="bg-indigo-600 p-6 rounded-3xl shadow-xl shadow-indigo-600/20 text-white space-y-3">
-                           <div className="flex items-center gap-2 text-indigo-200">
+                        <div className="bg-primary-600 p-6 rounded-3xl shadow-xl shadow-primary-600/20 text-white space-y-3">
+                           <div className="flex items-center gap-2 text-primary-200">
                               <PieChart size={14} />
                               <span className="text-[9px] font-black uppercase tracking-widest">Commission</span>
                            </div>
                            <div className="text-lg font-black">{formatMoney(m.totalCommission)}</div>
-                           <p className="text-[9px] font-bold text-indigo-100/60 uppercase tracking-tight">Total Earned YTD</p>
+                           <p className="text-[9px] font-bold text-primary-100/60 uppercase tracking-tight">Total Earned YTD</p>
                         </div>
                       </>
                     );
@@ -659,7 +651,7 @@ const SalesTeamView: React.FC<Props> = ({
                                </p>
                             </div>
                             <div className="flex items-start gap-3">
-                               <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-1.5" />
+                               <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mt-1.5" />
                                <p className="text-xs font-medium text-slate-600 dark:text-slate-300">
                                   Average deal realization value: <span className="font-black text-slate-800 dark:text-slate-100">{formatMoney(m.winsCount > 0 ? m.totalRevenue / m.winsCount : 0)}</span> per conversion node.
                                </p>

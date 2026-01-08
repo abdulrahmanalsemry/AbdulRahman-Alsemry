@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
@@ -13,6 +12,7 @@ interface Props {
   type?: 'danger' | 'info' | 'warning';
 }
 
+/* Fix: Completed truncated file and added missing default export to solve "Module has no default export" errors in consumer components */
 const ConfirmationModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -37,9 +37,9 @@ const ConfirmationModal: React.FC<Props> = ({
       button: 'bg-amber-600 hover:bg-amber-700 shadow-amber-500/30 dark:shadow-amber-900/40'
     },
     info: {
-      bg: 'bg-indigo-50 dark:bg-indigo-900/20',
-      icon: 'text-indigo-600 dark:text-indigo-400',
-      button: 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30 dark:shadow-indigo-900/40'
+      bg: 'bg-primary-50 dark:bg-primary-900/20',
+      icon: 'text-primary-600 dark:text-primary-400',
+      button: 'bg-primary-600 hover:bg-primary-700 shadow-primary-500/30 dark:shadow-primary-900/40'
     }
   };
 
@@ -75,7 +75,7 @@ const ConfirmationModal: React.FC<Props> = ({
                 onConfirm();
                 onClose();
               }}
-              className={`flex-1 px-6 py-4 font-bold text-white rounded-2xl shadow-xl transition-all active:scale-95 ${activeColors.button}`}
+              className={`flex-1 px-6 py-4 font-bold text-white rounded-2xl transition-all active:scale-95 ${activeColors.button}`}
             >
               {confirmText}
             </button>

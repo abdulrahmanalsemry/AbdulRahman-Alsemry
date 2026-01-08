@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Client, Quote, Invoice, CommunicationLog, CommLogType, QuoteStatus } from '../types';
 import { 
@@ -46,7 +45,6 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
     agentName: ''
   });
 
-  // Financial Calculators for Client Specific Data
   const getClientStats = (clientId: string) => {
     const clientQuotes = quotes.filter(q => q.clientId === clientId && q.status === QuoteStatus.APPROVED);
     const clientInvoices = invoices.filter(i => i.clientId === clientId);
@@ -55,7 +53,6 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
     const totalBilledSoFar = clientInvoices.reduce((sum, i) => sum + i.totalAmount, 0);
     const otherOutstanding = Math.max(0, totalContractCommitment - totalBilledSoFar);
 
-    // Calculate Next Billing Date
     let nextBillingDate: string | null = null;
     clientInvoices.forEach(i => {
       if (i.isRecurring) {
@@ -160,21 +157,20 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
           <input 
             type="text" 
             placeholder="Search clients..." 
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white dark:bg-slate-800 dark:text-white"
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white dark:bg-slate-800 dark:text-white"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <button 
           onClick={handleOpenAdd}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 transition-all w-full md:w-auto justify-center active:scale-95"
+          className="bg-primary-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all w-full md:w-auto justify-center active:scale-95"
         >
           <UserPlus size={20} /> Add Client
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Client List */}
         <div className="lg:col-span-1 space-y-4">
           <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wider px-2">Client Directory</h3>
           <div className="space-y-3 max-h-[calc(100vh-250px)] overflow-y-auto pr-2 custom-scrollbar">
@@ -186,8 +182,8 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                   onClick={() => setSelectedClientId(client.id)}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     selectedClientId === client.id 
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' 
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-indigo-300'
+                      ? 'bg-primary-600 border-primary-600 text-white shadow-lg' 
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-primary-300'
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -199,7 +195,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold truncate">{client.companyName}</h4>
                       {otherOutstanding > 0 && (
-                        <div className={`text-[9px] font-black uppercase tracking-tighter mt-1 ${selectedClientId === client.id ? 'text-indigo-200' : 'text-indigo-500 dark:text-indigo-400'}`}>
+                        <div className={`text-[9px] font-black uppercase tracking-tighter mt-1 ${selectedClientId === client.id ? 'text-primary-200' : 'text-primary-500 dark:text-primary-400'}`}>
                           Commitment: {formatMoney(otherOutstanding)}
                         </div>
                       )}
@@ -212,40 +208,38 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
           </div>
         </div>
 
-        {/* Client Details */}
         <div className="lg:col-span-2">
           {selectedClient ? (
             <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20">
                 <div className="flex flex-col xl:flex-row justify-between items-start gap-8">
                   <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-3xl font-black shadow-xl">
+                    <div className="w-20 h-20 rounded-2xl bg-primary-600 flex items-center justify-center text-white text-3xl font-black shadow-xl">
                       {selectedClient.companyName[0]}
                     </div>
                     <div>
                       <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">{selectedClient.companyName}</h2>
                       <p className="text-slate-500 dark:text-slate-400 font-medium">{selectedClient.contactPerson}</p>
                       <div className="flex gap-2 mt-2">
-                         <button onClick={handleOpenEdit} className="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest hover:underline">Edit Identity</button>
+                         <button onClick={handleOpenEdit} className="text-xs font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest hover:underline">Edit Identity</button>
                          <span className="text-slate-300 dark:text-slate-700">•</span>
                          <button onClick={() => { setClientToDelete(selectedClient.id); setShowConfirmDelete(true); }} className="text-xs font-black text-red-400 dark:text-red-500 uppercase tracking-widest hover:underline">Archive</button>
                       </div>
                     </div>
                   </div>
 
-                  {/* Future Contract Value Highlight */}
                   {(() => {
                     const stats = getClientStats(selectedClient.id);
                     return (
                       <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
-                        <div className="bg-indigo-600 p-6 rounded-[2rem] text-white shadow-xl shadow-indigo-600/20 min-w-[220px] relative overflow-hidden">
+                        <div className="bg-primary-600 p-6 rounded-[2rem] text-white shadow-xl shadow-primary-600/20 min-w-[220px] relative overflow-hidden">
                            <TrendingUp className="absolute -bottom-2 -right-2 w-20 h-20 text-white opacity-5" />
-                           <div className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1 text-indigo-100">Contract Remainder</div>
+                           <div className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1 text-primary-100">Contract Remainder</div>
                            <div className="text-2xl font-black">{formatMoney(stats.otherOutstanding)}</div>
                            {stats.nextBillingDate && (
                              <div className="mt-3 flex items-center gap-2 bg-black/10 px-3 py-1.5 rounded-xl border border-white/10 w-fit">
-                                <Calendar size={12} className="text-indigo-200" />
-                                <span className="text-[9px] font-black uppercase text-indigo-100">Next Cycle: {stats.nextBillingDate}</span>
+                                <Calendar size={12} className="text-primary-200" />
+                                <span className="text-[9px] font-black uppercase text-primary-100">Next Cycle: {stats.nextBillingDate}</span>
                              </div>
                            )}
                         </div>
@@ -254,7 +248,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                            <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{formatMoney(stats.totalContractCommitment)}</div>
                            <div className="w-full bg-slate-100 dark:bg-slate-900 h-1.5 rounded-full mt-3 overflow-hidden">
                               <div 
-                                className="bg-indigo-600 h-full transition-all duration-1000" 
+                                className="bg-primary-600 h-full transition-all duration-1000" 
                                 style={{ width: `${(stats.totalBilledSoFar / (stats.totalContractCommitment || 1)) * 100}%` }}
                               />
                            </div>
@@ -284,13 +278,13 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                 <div className="flex gap-8 border-b border-slate-100 dark:border-slate-800">
                   <button 
                     onClick={() => setActiveTab('financial')}
-                    className={`pb-4 font-bold text-sm transition-all border-b-2 ${activeTab === 'financial' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
+                    className={`pb-4 font-bold text-sm transition-all border-b-2 ${activeTab === 'financial' ? 'border-primary-600 text-primary-600' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
                   >
                     Financial History
                   </button>
                   <button 
                     onClick={() => setActiveTab('communication')}
-                    className={`pb-4 font-bold text-sm transition-all border-b-2 ${activeTab === 'communication' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
+                    className={`pb-4 font-bold text-sm transition-all border-b-2 ${activeTab === 'communication' ? 'border-primary-600 text-primary-600' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'}`}
                   >
                     Communication Log
                   </button>
@@ -299,18 +293,17 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                 <div className="mt-8 animate-in fade-in slide-in-from-top-2 duration-300">
                   {activeTab === 'financial' ? (
                     <div className="space-y-10">
-                      {/* Subscription Status Context */}
                       {(() => {
                         const stats = getClientStats(selectedClient.id);
                         if (stats.otherOutstanding > 0) {
                           return (
-                            <div className="bg-indigo-50 dark:bg-indigo-900/20 p-6 rounded-[2rem] border border-indigo-100 dark:border-indigo-800/50 flex items-start gap-4">
-                               <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                            <div className="bg-primary-50 dark:bg-primary-900/20 p-6 rounded-[2rem] border border-primary-100 dark:border-primary-800/50 flex items-start gap-4">
+                               <div className="w-10 h-10 bg-primary-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
                                   <Clock size={20} />
                                </div>
                                <div>
-                                  <h6 className="text-sm font-black text-indigo-900 dark:text-indigo-100 mb-1">Unrealized Contractual Value</h6>
-                                  <p className="text-xs text-indigo-800/70 dark:text-indigo-200/70 leading-relaxed font-medium">
+                                  <h6 className="text-sm font-black text-primary-900 dark:text-primary-100 mb-1">Unrealized Contractual Value</h6>
+                                  <p className="text-xs text-primary-800/70 dark:text-primary-200/70 leading-relaxed font-medium">
                                     The system tracks <span className="font-black">{formatMoney(stats.otherOutstanding)}</span> in future revenue for this client. 
                                     {stats.nextBillingDate ? ` The next scheduled installment will be realized on ${stats.nextBillingDate}.` : ' Ensure recurring billing is synchronized to generate future invoices.'}
                                   </p>
@@ -338,12 +331,12 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                             const remainder = Math.max(0, quote.totalAmount - billedAmount);
                             
                             return (
-                              <div key={quote.id} className="bg-slate-50/50 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 group hover:border-indigo-200 dark:hover:border-indigo-900 transition-all">
+                              <div key={quote.id} className="bg-slate-50/50 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 group hover:border-primary-200 dark:hover:border-primary-900 transition-all">
                                 <div className="flex flex-col md:flex-row justify-between gap-4">
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-black text-indigo-600 dark:text-indigo-400">{quote.quoteNumber}</span>
-                                      <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-[9px] font-black rounded border border-indigo-100 dark:border-indigo-800">V{quote.version}</span>
+                                      <span className="font-black text-primary-600 dark:text-primary-400">{quote.quoteNumber}</span>
+                                      <span className="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 text-[9px] font-black rounded border border-primary-100 dark:border-primary-800">V{quote.version}</span>
                                     </div>
                                     <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">{quote.date}</div>
                                   </div>
@@ -354,8 +347,8 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                                      </div>
                                      <ArrowRightLeft className="text-slate-200 dark:text-slate-700" size={16} />
                                      <div className="text-center">
-                                        <div className="text-[9px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-widest">Invoiced Value</div>
-                                        <div className="text-sm font-black text-indigo-600 dark:text-indigo-400">{formatMoney(billedAmount, quote.currency)}</div>
+                                        <div className="text-[9px] font-black text-primary-500 dark:text-primary-400 uppercase tracking-widest">Invoiced Value</div>
+                                        <div className="text-sm font-black text-primary-600 dark:text-primary-400">{formatMoney(billedAmount, quote.currency)}</div>
                                      </div>
                                   </div>
                                   <div className="text-right flex flex-col justify-center min-w-[120px]">
@@ -420,7 +413,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                         </h5>
                         <button 
                           onClick={() => setShowAddLogModal(true)}
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase flex items-center gap-2 hover:bg-indigo-700 shadow-md transition-all active:scale-95"
+                          className="bg-primary-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase flex items-center gap-2 hover:bg-primary-700 shadow-md transition-all active:scale-95"
                         >
                           <Plus size={14} /> Log Interaction
                         </button>
@@ -429,9 +422,9 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                       <div className="space-y-4">
                         {(selectedClient.communicationLogs || []).length > 0 ? (
                           selectedClient.communicationLogs!.map(log => (
-                            <div key={log.id} className="flex gap-4 p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 group hover:border-indigo-200 dark:hover:border-indigo-900 transition-all">
+                            <div key={log.id} className="flex gap-4 p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 group hover:border-primary-200 dark:hover:border-primary-900 transition-all">
                               <div className="shrink-0">
-                                <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm">
+                                <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-primary-600 dark:text-primary-400 shadow-sm">
                                   {getLogIcon(log.type)}
                                 </div>
                               </div>
@@ -474,13 +467,12 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
         </div>
       </div>
 
-      {/* Log Interaction Modal */}
       {showAddLogModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md shadow-2xl p-8 space-y-6 animate-in zoom-in-95 duration-200">
              <div className="flex justify-between items-center">
                <div className="flex items-center gap-4">
-                 <div className="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 p-3 rounded-2xl">
+                 <div className="bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 p-3 rounded-2xl">
                     <MessageSquare size={24} />
                  </div>
                  <h3 className="text-xl font-black text-slate-800 dark:text-slate-100">Log Interaction</h3>
@@ -528,7 +520,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">Summary</label>
                   <textarea 
-                    className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium h-32 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/20 transition-all outline-none"
+                    className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium h-32 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/20 transition-all outline-none"
                     placeholder="Details of the interaction..."
                     value={newLog.summary}
                     onChange={e => setNewLog({...newLog, summary: e.target.value})}
@@ -538,7 +530,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
 
              <button 
                onClick={handleAddLog}
-               className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all active:scale-95"
+               className="w-full bg-primary-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95"
              >
                Commit to Ledger
              </button>
@@ -559,7 +551,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-lg shadow-2xl p-8 space-y-6 animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg">
+                <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg">
                   {isEditing ? <Edit3 size={24} /> : <UserPlus size={24} />}
                 </div>
                 <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100">
@@ -576,7 +568,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                     <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">Company Name</label>
                     <input 
                       type="text" 
-                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-bold transition-all"
+                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-bold transition-all"
                       value={newClient.companyName}
                       onChange={(e) => setNewClient({...newClient, companyName: e.target.value})}
                       placeholder="e.g., Global Logistics LLC"
@@ -586,7 +578,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                     <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">Contact Person</label>
                     <input 
                       type="text" 
-                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium transition-all"
+                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium transition-all"
                       value={newClient.contactPerson}
                       onChange={(e) => setNewClient({...newClient, contactPerson: e.target.value})}
                       placeholder="e.g., Jane Doe"
@@ -617,7 +609,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                 <div className="space-y-1">
                     <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider ml-1">Physical Address</label>
                     <textarea 
-                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium h-28 transition-all"
+                      className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-500/10 bg-slate-50 dark:bg-slate-800 dark:text-white font-medium h-28 transition-all"
                       value={newClient.address}
                       onChange={(e) => setNewClient({...newClient, address: e.target.value})}
                       placeholder="Street, City, Zip Code"
@@ -634,7 +626,7 @@ const ClientsView: React.FC<Props> = ({ clients, setClients, quotes, invoices, f
                 </button>
                 <button 
                   onClick={handleSaveClient} 
-                  className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 transition-all active:scale-95"
+                  className="bg-primary-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-700 shadow-xl shadow-primary-500/30 transition-all active:scale-95"
                 >
                   {isEditing ? 'Save Changes' : 'Create Profile'}
                 </button>

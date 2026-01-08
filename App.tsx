@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   LayoutDashboard, FileText, Receipt, Users, Package, CreditCard, 
   TrendingUp, Settings, Menu, X, BrainCircuit, Building2, 
   LogOut, ShieldAlert, ShieldCheck, Sun, Moon, Globe, CalendarClock,
-  Clock, AlertTriangle, MapPinned, LayoutGrid
+  Clock, AlertTriangle, MapPinned, LayoutGrid, UserPlus
 } from 'lucide-react';
-import { Quote, Invoice, Salesperson, ServiceItem, OperationalExpense, QuoteStatus, InvoiceStatus, Client, UserProfile, CustomRole, Permission, UserStatus, Lead } from './types';
+import { Quote, Invoice, Salesperson, ServiceItem, OperationalExpense, QuoteStatus, InvoiceStatus, Client, UserProfile, CustomRole, Permission, UserStatus, Lead, SalespersonType } from './types';
 import { INITIAL_SALES_TEAM, INITIAL_CATALOG, INITIAL_QUOTES, INITIAL_INVOICES, INITIAL_EXPENSES, INITIAL_CLIENTS, SYSTEM_ROLES, INITIAL_USER_PROFILES } from './constants';
 import Dashboard from './components/Dashboard';
 import QuotesView from './components/QuotesView';
@@ -35,6 +34,86 @@ export const CURRENCY_LIST = [
   { code: 'AED', symbol: 'DH', name: 'UAE Dirham' }
 ];
 
+export const SYSTEM_THEMES = [
+  { id: 'indigo', name: 'Indigo', colors: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81', 950: '#1e1b4b' } },
+  { id: 'gold', name: 'Gold', colors: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f', 950: '#451a03' } },
+  { id: 'emerald', name: 'Emerald', colors: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22' } },
+  { id: 'rose', name: 'Rose', colors: { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337', 950: '#4c0519' } },
+  { id: 'blue', name: 'Blue', colors: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a', 950: '#172554' } },
+  { id: 'violet', name: 'Violet', colors: { 50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95', 950: '#2e1065' } }
+];
+
+/**
+ * Generates a full Tailwind-like color scale from a single hex value.
+ * Uses HSL manipulation to create consistent shades.
+ */
+const generatePaletteFromHex = (hex: string) => {
+  // Convert hex to RGB
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+
+  // Convert RGB to HSL
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; 
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  const hslToHex = (h: number, s: number, l: number) => {
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l; 
+    } else {
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+    const toHex = (x: number) => {
+      const hex = Math.round(x * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  };
+
+  // Define scale light/dark offsets
+  // 500 is the base. 50 is very light, 950 is very dark.
+  return {
+    50: hslToHex(h, s, Math.min(0.97, l + (1 - l) * 0.9)),
+    100: hslToHex(h, s, Math.min(0.94, l + (1 - l) * 0.8)),
+    200: hslToHex(h, s, Math.min(0.88, l + (1 - l) * 0.6)),
+    300: hslToHex(h, s, Math.min(0.8, l + (1 - l) * 0.4)),
+    400: hslToHex(h, s, Math.min(0.7, l + (1 - l) * 0.2)),
+    500: hex,
+    600: hslToHex(h, s, l * 0.85),
+    700: hslToHex(h, s, l * 0.7),
+    800: hslToHex(h, s, l * 0.55),
+    900: hslToHex(h, s, l * 0.4),
+    950: hslToHex(h, s, l * 0.25),
+  };
+};
+
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -49,6 +128,10 @@ const App: React.FC = () => {
   const [companyBankDetails, setCompanyBankDetails] = useState('Bank Name: Muscat International\nAccount Name: SmartQuote ERP LLC\nAccount Number: 0123-4567-8901-2345\nBranch: Main Muscat');
   const [defaultTerms, setDefaultTerms] = useState('1. Quote validity is 30 days.\n2. 50% advance payment required.\n3. Delivery within 14 working days.');
   const [defaultRoleId, setDefaultRoleId] = useState('role-new-user');
+  
+  // Theme State
+  const [primaryColorId, setPrimaryColorId] = useState('indigo');
+  const [customColorHex, setCustomColorHex] = useState('#6366f1'); // Default to Indigo if custom is chosen but no hex picked
 
   // Currency & Exchange State
   const [baseCurrency, setBaseCurrency] = useState('OMR');
@@ -68,35 +151,49 @@ const App: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>(INITIAL_INVOICES);
   const [expenses, setExpenses] = useState<OperationalExpense[]>(INITIAL_EXPENSES);
 
+  // Theme Injection Logic
+  useEffect(() => {
+    const root = document.documentElement;
+    let colors;
+
+    if (primaryColorId === 'custom') {
+      colors = generatePaletteFromHex(customColorHex);
+    } else {
+      const theme = SYSTEM_THEMES.find(t => t.id === primaryColorId) || SYSTEM_THEMES[0];
+      colors = theme.colors;
+    }
+
+    Object.entries(colors).forEach(([shade, hex]) => {
+      root.style.setProperty(`--primary-${shade}`, hex as string);
+    });
+  }, [primaryColorId, customColorHex]);
+
   const pendingUsersCount = useMemo(() => userProfiles.filter(u => u.roleId === 'role-new-user').length, [userProfiles]);
 
-  // Authorization Data Isolation Logic
+  const unlinkedSalesAgents = useMemo(() => {
+    return userProfiles.filter(u => {
+      const isSalesRole = u.roleId === 'role-sales-team-leads';
+      const notInMatrix = !team.some(member => member.email.toLowerCase() === u.email.toLowerCase());
+      return isSalesRole && notInMatrix;
+    });
+  }, [userProfiles, team]);
+
+  const unlinkedSalesAgentsCount = unlinkedSalesAgents.length;
+
   const currentSalesperson = useMemo(() => {
     if (!currentUserProfile) return null;
-    // Strict identity match via email to ensure Hanan or others are linked to their Matrix profile
     return team.find(s => s.email?.toLowerCase() === currentUserProfile.email.toLowerCase()) || null;
   }, [currentUserProfile, team]);
 
   const isRestrictedRole = useMemo(() => {
     if (!currentUserProfile) return true;
-    
-    // Roles that CAN see all records from all staff:
-    // Super Admin, Administrator, Sales Manager, Secretary, and Accountant
-    // Accountants MUST see all invoices to manage collections.
     const unrestrictedRoles = ['role-super-admin', 'role-admin', 'role-sales-manager', 'role-secretary', 'role-accountant'];
-    
-    // If the current role IS NOT in the unrestricted list, they are restricted to their own data
     return !unrestrictedRoles.includes(currentUserProfile.roleId);
   }, [currentUserProfile]);
 
   const filteredLeads = useMemo(() => {
-    // If user is a manager/admin/secretary/accountant, show ALL leads
     if (!isRestrictedRole) return leads;
-    
-    // If restricted but somehow doesn't have a team profile yet, show nothing to avoid data leaks
     if (!currentSalesperson) return [];
-    
-    // Otherwise, show only their own leads
     return leads.filter(l => l.salespersonId === currentSalesperson.id);
   }, [leads, isRestrictedRole, currentSalesperson]);
 
@@ -113,7 +210,6 @@ const App: React.FC = () => {
     return invoices.filter(i => myQuoteIds.includes(i.quoteId));
   }, [invoices, filteredQuotes, isRestrictedRole, currentSalesperson]);
 
-  // Initialize Session
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -153,7 +249,6 @@ const App: React.FC = () => {
       } else if (profile) {
         setCurrentUserProfile(profile);
       } else {
-        // Support selected role from user_metadata or fallback to global default
         const selectedRoleId = session.user.user_metadata?.roleId || defaultRoleId;
         const newProfile: UserProfile = {
           id: session.user.id,
@@ -252,7 +347,7 @@ const App: React.FC = () => {
     if (currentUserProfile?.roleId === 'role-new-user') {
       return (
         <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in-95 duration-500 max-w-xl mx-auto">
-          <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 rounded-3xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-8 shadow-inner">
+          <div className="w-20 h-20 bg-primary-50 dark:bg-primary-900/30 rounded-3xl flex items-center justify-center text-primary-600 dark:text-primary-400 mb-8 shadow-inner">
             <Clock size={40} />
           </div>
           <h2 className="text-3xl font-black tracking-tight text-slate-800 dark:text-slate-100">Welcome to SmartQuote</h2>
@@ -284,6 +379,8 @@ const App: React.FC = () => {
           defaultTerms={defaultTerms} setDefaultTerms={setDefaultTerms}
           onLogout={handleLogout}
           defaultRoleId={defaultRoleId} setDefaultRoleId={setDefaultRoleId}
+          primaryColorId={primaryColorId} setPrimaryColorId={setPrimaryColorId}
+          customColorHex={customColorHex} setCustomColorHex={setCustomColorHex}
         />
       );
     }
@@ -313,9 +410,9 @@ const App: React.FC = () => {
       case 'clients':
         return <ClientsView clients={clients} setClients={setClients} quotes={normalizedQuotes} invoices={normalizedInvoices} formatMoney={formatMoney} />;
       case 'quotes':
-        return <QuotesView quotes={filteredQuotes} setQuotes={setQuotes} team={team} catalog={catalog} clients={clients} setClients={setClients} leads={leads} setLeads={setLeads} setInvoices={setInvoices} invoices={invoices} companyName={companyName} letterhead={companyLetterhead} formatMoney={formatMoney} baseCurrency={baseCurrency} exchangeRates={exchangeRates} bankDetails={companyBankDetails} defaultTerms={defaultTerms} />;
+        return <QuotesView quotes={filteredQuotes} setQuotes={setQuotes} team={team} catalog={catalog} clients={clients} setClients={setClients} leads={leads} setLeads={setLeads} setInvoices={setInvoices} invoices={invoices} companyName={companyName} letterhead={companyLetterhead} formatMoney={formatMoney} baseCurrency={baseCurrency} exchangeRates={exchangeRates} bankDetails={companyBankDetails} defaultTerms={defaultTerms} primaryColorHex={primaryColorId === 'custom' ? customColorHex : SYSTEM_THEMES.find(t=>t.id===primaryColorId)?.colors[600]} />;
       case 'invoices':
-        return <InvoicesView invoices={filteredInvoices} setInvoices={setInvoices} clients={clients} team={team} quotes={quotes} letterhead={companyLetterhead} formatMoney={formatMoney} bankDetails={companyBankDetails} />;
+        return <InvoicesView invoices={filteredInvoices} setInvoices={setInvoices} clients={clients} team={team} quotes={quotes} letterhead={companyLetterhead} formatMoney={formatMoney} bankDetails={companyBankDetails} primaryColorHex={primaryColorId === 'custom' ? customColorHex : SYSTEM_THEMES.find(t=>t.id===primaryColorId)?.colors[600]} />;
       case 'upcoming':
         return <UpcomingInvoicesView quotes={filteredQuotes} invoices={filteredInvoices} formatMoney={formatMoney} onSelectInvoice={(id) => { setActiveView('invoices'); }} />;
       case 'team':
@@ -338,20 +435,20 @@ const App: React.FC = () => {
       case 'ai':
         return <AIInsightsView quotes={filteredQuotes} invoices={filteredInvoices} expenses={expenses} team={team} />;
       case 'access':
-        return <AccessManagementView roles={roles} setRoles={setRoles} users={userProfiles} setUsers={setUserProfiles} />;
+        return <AccessManagementView roles={roles} setRoles={setRoles} users={userProfiles} setUsers={setUserProfiles} team={team} setTeam={setTeam} />;
       default:
         return <Dashboard quotes={normalizedQuotes} invoices={normalizedInvoices} expenses={normalizedExpenses} formatMoney={formatMoney} onViewAllTransactions={() => setActiveView('invoices')} isSalesRole={isRestrictedRole} salesperson={currentSalesperson} leads={filteredLeads} userRoleId={currentUserProfile?.roleId} />;
     }
   };
 
-  if (authLoading || isLoggingOut) return <div className="min-h-screen bg-slate-950 flex items-center justify-center animate-pulse"><div className="w-16 h-16 border-4 border-indigo-50 border-t-transparent rounded-full animate-spin"></div></div>;
+  if (authLoading || isLoggingOut) return <div className="min-h-screen bg-slate-950 flex items-center justify-center animate-pulse"><div className="w-16 h-16 border-4 border-primary-50 border-t-transparent rounded-full animate-spin"></div></div>;
   if (!session) return <AuthView roles={roles.filter(r => r.id !== 'role-super-admin')} defaultRoleId={defaultRoleId} />;
 
   return (
     <div className={`flex h-screen overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-slate-900 text-white transition-all duration-300 flex flex-col z-50`}>
         <div className="p-4 flex items-center justify-between">
-          {isSidebarOpen && <span className="font-bold text-xl tracking-tight text-indigo-400">{companyName.split(' ')[0]}</span>}
+          {isSidebarOpen && <span className="font-bold text-xl tracking-tight text-primary-400">{companyName.split(' ')[0]}</span>}
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-lg hover:bg-slate-800 transition-colors">
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -361,14 +458,14 @@ const App: React.FC = () => {
             <button 
               key={item.id} 
               onClick={() => setActiveView(item.id as View)} 
-              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all relative ${activeView === item.id ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all relative ${activeView === item.id ? 'bg-primary-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
             >
               <item.icon size={20} />
               {isSidebarOpen && <span className="font-medium">{item.label}</span>}
-              {item.id === 'access' && pendingUsersCount > 0 && (
+              {item.id === 'access' && (pendingUsersCount > 0 || unlinkedSalesAgentsCount > 0) && (
                 <span className={`absolute ${isSidebarOpen ? 'right-4' : 'top-1 right-1'} flex h-2 w-2`}>
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 border border-slate-900"></span>
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${unlinkedSalesAgentsCount > 0 ? 'bg-amber-400' : 'bg-red-400'}`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 border border-slate-900 ${unlinkedSalesAgentsCount > 0 ? 'bg-amber-500' : 'bg-red-500'}`}></span>
                 </span>
               )}
             </button>
@@ -386,25 +483,36 @@ const App: React.FC = () => {
           <div className="flex items-center gap-3">
              <h1 className="text-2xl font-black capitalize">{activeView === 'settings' ? 'Settings' : navItems.find(i => i.id === activeView)?.label}</h1>
              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">
-               <Globe size={12} className="text-indigo-500" />
+               <Globe size={12} className="text-primary-500" />
                <span className="text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 tracking-widest">{baseCurrency} Registry</span>
              </div>
-             {pendingUsersCount > 0 && hasPermission('manage_access') && (
-               <button 
-                onClick={() => setActiveView('access')}
-                className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1 rounded-full border border-red-100 dark:border-red-900 animate-in fade-in zoom-in duration-300 ml-4 shadow-sm"
-               >
-                 <AlertTriangle size={12} />
-                 <span className="text-[10px] font-black uppercase tracking-widest">{pendingUsersCount} New User needs role assignment</span>
-               </button>
-             )}
+             <div className="flex gap-2 ml-4">
+               {pendingUsersCount > 0 && hasPermission('manage_access') && (
+                 <button 
+                  onClick={() => setActiveView('access')}
+                  className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1 rounded-full border border-red-100 dark:border-red-900 animate-in fade-in zoom-in duration-300 shadow-sm"
+                 >
+                   <AlertTriangle size={12} />
+                   <span className="text-[10px] font-black uppercase tracking-widest">{pendingUsersCount} New Registrations</span>
+                 </button>
+               )}
+               {unlinkedSalesAgentsCount > 0 && hasPermission('manage_access') && (
+                 <button 
+                  onClick={() => setActiveView('access')}
+                  className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full border border-amber-100 dark:border-amber-900 animate-in fade-in zoom-in duration-300 shadow-sm"
+                 >
+                   <UserPlus size={12} />
+                   <span className="text-[10px] font-black uppercase tracking-widest">{unlinkedSalesAgentsCount} Agents need Matrix Linking</span>
+                 </button>
+               )}
+             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
                <div className="text-xs font-black">{session.user.email}</div>
                <div className="text-[10px] text-slate-400 font-bold uppercase">Base: {baseCurrency}</div>
             </div>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 bg-indigo-100 text-indigo-600 border-indigo-200">{session.user.email?.substring(0, 2).toUpperCase()}</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 bg-primary-100 text-primary-600 border-primary-200">{session.user.email?.substring(0, 2).toUpperCase()}</div>
           </div>
         </header>
         <div className="p-8">{renderView()}</div>

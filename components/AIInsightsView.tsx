@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Quote, Invoice, OperationalExpense, Salesperson } from '../types';
 import { getBusinessInsights } from '../services/geminiService';
 import { BrainCircuit, Sparkles, RefreshCcw, TrendingUp, AlertTriangle, Lightbulb, CheckCircle2, ChevronRight } from 'lucide-react';
-
 
 interface Props {
   quotes: Quote[];
@@ -12,10 +10,6 @@ interface Props {
   team: Salesperson[];
 }
 
-/**
- * A custom Markdown-to-JSX renderer to handle Gemini's output
- * without showing raw hashtags or asterisks.
- */
 const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
   if (!content) return null;
 
@@ -35,7 +29,6 @@ const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
   };
 
   const parseInlineFormatting = (text: string) => {
-    // Replace **text** with bold spans and *text* with italics
     const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
     return parts.map((part, i) => {
       if (part.startsWith('**') && part.endsWith('**')) {
@@ -51,19 +44,18 @@ const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
   lines.forEach((line, index) => {
     const trimmedLine = line.trim();
 
-    // Headers
     if (trimmedLine.startsWith('###')) {
       flushList(index);
       elements.push(
-        <h4 key={index} className="text-sm font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.15em] mt-8 mb-3 flex items-center gap-2">
-          <div className="w-1 h-4 bg-indigo-600 dark:bg-indigo-500 rounded-full"></div>
+        <h4 key={index} className="text-sm font-black text-primary-600 dark:text-primary-400 uppercase tracking-[0.15em] mt-8 mb-3 flex items-center gap-2">
+          <div className="w-1 h-4 bg-primary-600 dark:bg-primary-500 rounded-full"></div>
           {parseInlineFormatting(trimmedLine.replace(/^###\s*/, ''))}
         </h4>
       );
     } else if (trimmedLine.startsWith('##')) {
       flushList(index);
       elements.push(
-        <h3 key={index} className="text-lg font-black text-slate-800 dark:text-slate-100 mt-10 mb-4 border-l-4 border-indigo-200 dark:border-indigo-800 pl-4">
+        <h3 key={index} className="text-lg font-black text-slate-800 dark:text-slate-100 mt-10 mb-4 border-l-4 border-primary-200 dark:border-primary-800 pl-4">
           {parseInlineFormatting(trimmedLine.replace(/^##\s*/, ''))}
         </h3>
       );
@@ -75,13 +67,12 @@ const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
         </h2>
       );
     }
-    // List items
     else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ') || (trimmedLine.match(/^\d+\.\s/) && !trimmedLine.includes(':'))) {
       const contentText = trimmedLine.replace(/^([-*]|\d+\.)\s*/, '');
       listItems.push(
         <li key={index} className="flex items-start gap-3 bg-slate-50/50 dark:bg-slate-800/40 p-3 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-colors">
           <div className="mt-1.5 shrink-0">
-            <ChevronRight size={14} className="text-indigo-400" />
+            <ChevronRight size={14} className="text-primary-400" />
           </div>
           <span className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
             {parseInlineFormatting(contentText)}
@@ -89,7 +80,6 @@ const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
         </li>
       );
     }
-    // Regular paragraphs
     else if (trimmedLine.length > 0) {
       flushList(index);
       elements.push(
@@ -98,7 +88,6 @@ const FormattedReport: React.FC<{ content: string }> = ({ content }) => {
         </p>
       );
     }
-    // Empty lines
     else {
       flushList(index);
     }
@@ -126,7 +115,7 @@ const AIInsightsView: React.FC<Props> = ({ quotes, invoices, expenses, team }) =
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-3xl text-white shadow-xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
+      <div className="bg-gradient-to-br from-primary-600 to-primary-800 p-8 rounded-3xl text-white shadow-xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         <div className="bg-white/20 p-6 rounded-2xl backdrop-blur-md relative z-10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
           <BrainCircuit size={48} className="text-white" />
@@ -135,16 +124,15 @@ const AIInsightsView: React.FC<Props> = ({ quotes, invoices, expenses, team }) =
           <h2 className="text-2xl font-black mb-2 flex items-center justify-center md:justify-start gap-2 tracking-tight">
             AI Business Intelligence <Sparkles size={20} className="text-amber-300 animate-pulse" />
           </h2>
-          <p className="text-indigo-100 max-w-xl font-medium">
+          <p className="text-primary-100 max-w-xl font-medium">
             Advanced neural analysis of your revenue, conversions, and team performance metrics.
           </p>
         </div>
         <button 
           onClick={fetchInsight}
           disabled={loading}
-          className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-50 transition-all flex items-center gap-2 disabled:opacity-50 shadow-xl relative z-10 active:scale-95"
+          className="bg-white text-primary-600 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-50 transition-all flex items-center gap-2 disabled:opacity-50 shadow-xl relative z-10 active:scale-95"
         >
-          {/* Fix: Changed RefreshCw to RefreshCcw */}
           {loading ? <RefreshCcw className="animate-spin" size={20} /> : <RefreshCcw size={20} />}
           Generate Insights
         </button>
@@ -166,7 +154,7 @@ const AIInsightsView: React.FC<Props> = ({ quotes, invoices, expenses, team }) =
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
-          <div className="bg-indigo-50 dark:bg-indigo-900/30 p-3 rounded-2xl text-indigo-600 dark:text-indigo-400"><Lightbulb size={24} /></div>
+          <div className="bg-primary-50 dark:bg-primary-900/30 p-3 rounded-2xl text-primary-600 dark:text-primary-400"><Lightbulb size={24} /></div>
           <div>
             <h4 className="font-black text-slate-800 dark:text-slate-100 text-xs uppercase tracking-widest mb-1">Strategic Tips</h4>
             <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">Revenue optimization suggestions.</p>
@@ -178,8 +166,8 @@ const AIInsightsView: React.FC<Props> = ({ quotes, invoices, expenses, team }) =
         {loading && (
           <div className="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-10 flex flex-col items-center justify-center">
             <div className="relative">
-                <div className="w-20 h-20 border-4 border-indigo-100 dark:border-indigo-900/50 border-t-indigo-600 rounded-full animate-spin"></div>
-                <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 dark:text-indigo-400" size={32} />
+                <div className="w-20 h-20 border-4 border-primary-100 dark:border-primary-900/50 border-t-primary-600 rounded-full animate-spin"></div>
+                <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-600 dark:text-primary-400" size={32} />
             </div>
             <p className="mt-6 font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px]">AI Business Analyst is processing...</p>
           </div>

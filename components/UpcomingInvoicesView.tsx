@@ -1,10 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Quote, Invoice, QuoteStatus, RecurringFrequency, Client } from '../types';
+import { Quote, Invoice, RecurringFrequency } from '../types';
 import { 
-  CalendarClock, TrendingUp, Info, ArrowUpRight, 
-  Repeat, Clock, ChevronRight, Building2, Receipt,
-  CheckCircle2, AlertCircle, Search, Filter, FilterX,
-  Calendar, ListFilter
+  CalendarClock, Info, Repeat, ChevronRight, Receipt,
+  Search, Filter, FilterX, Calendar, ListFilter
 } from 'lucide-react';
 
 interface Props {
@@ -144,16 +142,20 @@ const UpcomingInvoicesView: React.FC<Props> = ({ quotes, invoices, formatMoney, 
     setDateRange({ start: '', end: '' });
   };
 
+  const combinedItems = useMemo(() => {
+    return [...filteredData.unpaid, ...filteredData.projected].sort((a, b) => a.date.localeCompare(b.date));
+  }, [filteredData]);
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-12">
       {/* Header Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-indigo-600 dark:bg-indigo-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-600/20 col-span-1 md:col-span-2 relative overflow-hidden">
+        <div className="bg-primary-600 dark:bg-primary-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-primary-600/20 col-span-1 md:col-span-2 relative overflow-hidden">
            <CalendarClock className="absolute -bottom-4 -right-4 w-40 h-40 opacity-10" />
            <div className="relative z-10 space-y-4">
-              <div className="text-[10px] font-black uppercase tracking-widest text-indigo-200">Filtered Projected Receivable</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-primary-200">Filtered Projected Receivable</div>
               <div className="text-4xl font-black tracking-tight">{formatMoney(filteredData.totalValue)}</div>
-              <p className="text-sm font-medium text-indigo-100/70 max-w-lg leading-relaxed">
+              <p className="text-sm font-medium text-primary-100/70 max-w-lg leading-relaxed">
                 Aggregating <span className="text-white font-bold">{filteredData.unpaid.length} pending settlements</span> and <span className="text-white font-bold">{filteredData.projected.length} future cycles</span> for the selected criteria.
               </p>
            </div>
@@ -170,7 +172,7 @@ const UpcomingInvoicesView: React.FC<Props> = ({ quotes, invoices, formatMoney, 
               </div>
               <div className="flex justify-between items-center text-xs">
                  <span className="text-slate-500 dark:text-slate-400 font-bold">Projected Revenue</span>
-                 <span className="font-black text-indigo-600 dark:text-indigo-400">{formatMoney(filteredData.projected.reduce((s,i)=>s+i.amount, 0))}</span>
+                 <span className="font-black text-primary-600 dark:text-primary-400">{formatMoney(filteredData.projected.reduce((s,i)=>s+i.amount, 0))}</span>
               </div>
            </div>
         </div>
@@ -179,7 +181,7 @@ const UpcomingInvoicesView: React.FC<Props> = ({ quotes, invoices, formatMoney, 
       {/* Advanced Filter Bar */}
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-black text-[10px] uppercase tracking-widest">
             <Filter size={14} /> Refine Revenue Forecast
           </div>
           <button onClick={clearFilters} className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 hover:text-red-500 transition-colors flex items-center gap-1">
@@ -195,196 +197,143 @@ const UpcomingInvoicesView: React.FC<Props> = ({ quotes, invoices, formatMoney, 
               <input 
                 type="text" 
                 placeholder="Client name or invoice ref..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all dark:text-slate-200"
+                className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 font-bold outline-none focus:ring-4 focus:ring-primary-500/10 transition-all dark:text-white"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Client Filter</label>
-            <select 
-              className="w-full p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm font-bold dark:text-slate-200"
-              value={clientFilter}
-              onChange={e => setClientFilter(e.target.value)}
-            >
-              <option value="all">All Clients</option>
-              {uniqueClients.map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
+             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Account Entity</label>
+             <select 
+               className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 font-bold outline-none dark:text-white"
+               value={clientFilter}
+               onChange={e => setClientFilter(e.target.value)}
+             >
+                <option value="all">All Accounts</option>
+                {uniqueClients.map(c => <option key={c} value={c}>{c}</option>)}
+             </select>
           </div>
-
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Settlement Type</label>
-            <div className="flex bg-slate-50 dark:bg-slate-800 p-1 rounded-xl border border-slate-100 dark:border-slate-800">
-               <button 
-                 onClick={() => setTypeFilter('all')}
-                 className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all ${typeFilter === 'all' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}
-               >All</button>
-               <button 
-                 onClick={() => setTypeFilter('unpaid')}
-                 className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all ${typeFilter === 'unpaid' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}
-               >Unpaid</button>
-               <button 
-                 onClick={() => setTypeFilter('projected')}
-                 className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all ${typeFilter === 'projected' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}
-               >Projected</button>
-            </div>
+             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Event Type</label>
+             <select 
+               className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 font-bold outline-none dark:text-white"
+               value={typeFilter}
+               onChange={e => setTypeFilter(e.target.value as any)}
+             >
+                <option value="all">Unpaid & Projected</option>
+                <option value="unpaid">Unpaid Ledger Only</option>
+                <option value="projected">Future Forecast Only</option>
+             </select>
           </div>
-
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Cycle Frequency</label>
-            <select 
-              disabled={typeFilter === 'unpaid'}
-              className="w-full p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm font-bold disabled:opacity-30 dark:text-slate-200"
-              value={freqFilter}
-              onChange={e => setFreqFilter(e.target.value as any)}
-            >
-              <option value="all">All Frequencies</option>
-              <option value="Monthly">Monthly Only</option>
-              <option value="Quarterly">Quarterly Only</option>
-              <option value="Annual">Annual Only</option>
-            </select>
+             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1">Cycle Interval</label>
+             <select 
+               className="w-full p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 font-bold outline-none dark:text-white"
+               value={freqFilter}
+               onChange={e => setFreqFilter(e.target.value as any)}
+             >
+                <option value="all">Any Frequency</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Annual">Annual</option>
+             </select>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50 dark:border-slate-800">
-           <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-1 flex items-center gap-2">
-                <Calendar size={12} /> Target Date Range
-              </label>
-              <div className="flex items-center gap-3">
-                 <input 
-                   type="date" 
-                   className="flex-1 p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-bold dark:text-slate-200" 
-                   value={dateRange.start}
-                   onChange={e => setDateRange({...dateRange, start: e.target.value})}
-                 />
-                 <span className="text-slate-300 dark:text-slate-600 font-bold">to</span>
-                 <input 
-                   type="date" 
-                   className="flex-1 p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-bold dark:text-slate-200" 
-                   value={dateRange.end}
-                   onChange={e => setDateRange({...dateRange, end: e.target.value})}
-                 />
-              </div>
+      {/* Main Ledger Table */}
+      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+           <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <ListFilter size={20} className="text-primary-600" /> Revenue Horizon Ledger
+           </h3>
+           <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-amber-500" />
+              <span className="text-[10px] font-black uppercase text-slate-400">Unpaid</span>
+              <div className="w-3 h-3 rounded-full bg-primary-600 ml-2" />
+              <span className="text-[10px] font-black uppercase text-slate-400">Projected</span>
            </div>
         </div>
-      </div>
-
-      <div className="space-y-6">
-         <div className="flex items-center justify-between px-2">
-            <div className="flex items-center gap-3">
-              <Clock size={20} className="text-indigo-600 dark:text-indigo-400" />
-              <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Projected Lifecycle Timeline</h3>
-            </div>
-            <div className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-              {filteredData.unpaid.length + filteredData.projected.length} Scheduled Events
-            </div>
-         </div>
-
-         <div className="grid grid-cols-1 gap-4">
-            {/* UNPAID ITEMS */}
-            {filteredData.unpaid.map(item => (
-              <div key={item.id} onClick={() => onSelectInvoice(item.id)} className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border-2 border-amber-100 dark:border-amber-900/30 shadow-sm group hover:border-indigo-400 dark:hover:border-indigo-600 transition-all cursor-pointer relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1 bg-amber-400 h-full" />
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                   <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex flex-col items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                         <Receipt size={24} />
-                      </div>
-                      <div>
-                         <div className="flex items-center gap-2">
-                            <h4 className="text-lg font-black text-slate-800 dark:text-slate-100">{item.clientName}</h4>
-                            <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 text-[8px] font-black uppercase rounded border border-amber-100 dark:border-amber-800">Pending Settlement</span>
-                         </div>
-                         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Overdue/Unpaid Ref: <span className="font-black">{item.parentRef}</span></p>
-                      </div>
-                   </div>
-                   <div className="flex flex-1 md:justify-center items-center gap-8 border-l border-r border-slate-50 dark:border-slate-800 border-dashed px-10">
-                      <div className="text-center">
-                         <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Maturity Date</div>
-                         <div className="text-sm font-black text-slate-800 dark:text-slate-100">{item.date}</div>
-                      </div>
-                      <div className="text-center">
-                         <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Logic</div>
-                         <div className="text-sm font-black text-slate-500 dark:text-slate-400 uppercase">{item.originalInvoice.paymentTerms}</div>
-                      </div>
-                   </div>
-                   <div className="text-right min-w-[150px]">
-                      <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Balance Due</div>
-                      <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{formatMoney(item.amount, item.currency)}</div>
-                   </div>
-                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-300 dark:text-slate-600 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 transition-all">
-                      <ArrowUpRight size={20} />
-                   </div>
-                </div>
-              </div>
+        <table className="w-full text-left">
+          <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+            <tr>
+              <th className="px-8 py-5">Source Node</th>
+              <th className="px-8 py-5">Event Target Date</th>
+              <th className="px-8 py-5 text-right">Value Magnitude</th>
+              <th className="px-8 py-5 text-center">Lifecycle Stage</th>
+              <th className="px-8 py-5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            {combinedItems.map((item) => (
+              <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                <td className="px-8 py-5">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${item.type === 'Unpaid' ? 'bg-amber-50 border-amber-100 text-amber-600' : 'bg-primary-50 border-primary-100 text-primary-600'}`}>
+                      {item.type === 'Unpaid' ? <Receipt size={18} /> : <Repeat size={18} />}
+                    </div>
+                    <div>
+                      <div className="text-sm font-black text-slate-800 dark:text-slate-100">{item.clientName}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-tighter">Ref: {item.parentRef}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-8 py-5">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300">
+                    <Calendar size={14} className="text-slate-400" />
+                    {item.date}
+                  </div>
+                </td>
+                <td className="px-8 py-5 text-right font-black text-slate-900 dark:text-slate-100">
+                  {formatMoney(item.amount, item.currency)}
+                </td>
+                <td className="px-8 py-5">
+                  <div className="flex justify-center">
+                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase border tracking-widest ${
+                      item.type === 'Unpaid' 
+                        ? 'bg-amber-100 text-amber-700 border-amber-200' 
+                        : 'bg-primary-100 text-primary-700 border-primary-200'
+                    }`}>
+                      {item.type} {item.frequency ? `(${item.frequency})` : ''}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-8 py-5 text-right">
+                  <button 
+                    onClick={() => onSelectInvoice(item.originalInvoice.id)}
+                    className="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </td>
+              </tr>
             ))}
-
-            {/* PROJECTED ITEMS */}
-            {filteredData.projected.map(item => (
-              <div key={item.id} className="bg-slate-50/50 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 group hover:border-indigo-400 dark:hover:border-indigo-600 transition-all relative overflow-hidden">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                   <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex flex-col items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                         <Repeat size={24} />
-                      </div>
-                      <div>
-                         <div className="flex items-center gap-2">
-                            <h4 className="text-lg font-black text-slate-800 dark:text-slate-100">{item.clientName}</h4>
-                            <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-[8px] font-black uppercase rounded border border-indigo-100 dark:border-indigo-800">Future Cycle</span>
-                         </div>
-                         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{item.frequency} Installment Ref: <span className="font-black">{item.parentRef}</span></p>
-                      </div>
-                   </div>
-                   <div className="flex flex-1 md:justify-center items-center gap-8 border-l border-r border-slate-50 dark:border-slate-800 border-dashed px-10">
-                      <div className="text-center">
-                         <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Forecast Date</div>
-                         <div className="text-sm font-black text-slate-800 dark:text-slate-100">{item.date}</div>
-                      </div>
-                      <div className="text-center">
-                         <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Automation</div>
-                         <div className="text-sm font-black text-emerald-600 dark:text-emerald-500 uppercase flex items-center gap-1">
-                            <CheckCircle2 size={12} /> Cycle Ready
-                         </div>
-                      </div>
-                   </div>
-                   <div className="text-right min-w-[150px]">
-                      <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Forecast Value</div>
-                      <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{formatMoney(item.amount, item.currency)}</div>
-                   </div>
-                   <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-500 opacity-40">
-                      <Clock size={20} />
-                   </div>
-                </div>
-              </div>
-            ))}
-
-            {(filteredData.unpaid.length === 0 && filteredData.projected.length === 0) && (
-              <div className="py-24 text-center bg-slate-50 dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
-                 <CalendarClock className="mx-auto text-slate-200 dark:text-slate-700 mb-4" size={64} />
-                 <h4 className="text-lg font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">No matching cashflows</h4>
-                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mt-2">Try adjusting your filters or date range to see more results.</p>
-                 <button onClick={clearFilters} className="mt-6 text-indigo-600 dark:text-indigo-400 font-black uppercase text-[10px] tracking-[0.2em] border-b-2 border-indigo-100 dark:border-indigo-900 hover:border-indigo-600 dark:hover:border-indigo-400 transition-all">Reset All Parameters</button>
-              </div>
+            {combinedItems.length === 0 && (
+              <tr>
+                <td colSpan={5} className="py-20 text-center text-slate-400 italic font-medium">
+                  No revenue nodes found for the current filter criteria.
+                </td>
+              </tr>
             )}
-         </div>
+          </tbody>
+        </table>
       </div>
 
-      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-800/50 flex flex-col md:flex-row items-center gap-8">
-         <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-[1.5rem] flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm shrink-0 border border-indigo-50 dark:border-indigo-900">
-            <Info size={32} />
-         </div>
-         <div className="flex-1">
-            <h5 className="text-sm font-black text-indigo-900 dark:text-indigo-100 mb-1 uppercase tracking-tight">Projection Methodology</h5>
-            <p className="text-xs text-indigo-800/70 dark:text-indigo-300/70 font-medium leading-relaxed">
-               The dashboard currently displays a <span className="font-bold">rolling forecast</span> based on active corporate contracts. Projections are automatically constrained by the <strong>Total Contractual Commitment</strong> and use calculated <strong>Installment Values</strong> to ensure financial accuracy across multi-month terms.
-            </p>
-         </div>
+      <div className="bg-primary-50 dark:bg-primary-900/20 p-8 rounded-[2.5rem] border border-primary-100 dark:border-primary-800/50 flex items-start gap-6">
+        <div className="p-4 bg-white dark:bg-slate-800 rounded-3xl shadow-sm text-primary-600">
+           <Info size={32} />
+        </div>
+        <div className="space-y-2">
+           <h4 className="text-lg font-black text-primary-900 dark:text-primary-100">Horizon Intelligence</h4>
+           <p className="text-sm text-primary-800/70 dark:text-primary-200/70 leading-relaxed font-medium">
+              This registry combines <span className="font-bold">Realized Debt</span> (Unpaid Invoices) with <span className="font-bold">Contractual Expectancy</span> (Future Recurring Cycles). Projected values are calculated based on the approved terms of active subscription contracts and are subject to generation thresholds.
+           </p>
+        </div>
       </div>
     </div>
   );
 };
 
+// Added missing default export to resolve "no default export" error in App.tsx
 export default UpcomingInvoicesView;

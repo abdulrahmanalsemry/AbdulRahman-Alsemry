@@ -90,14 +90,14 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
             <input 
               type="text" 
               placeholder="Search services..." 
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white dark:bg-slate-900 dark:text-slate-200"
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-white dark:bg-slate-900 dark:text-slate-200"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
         </div>
         <button 
           onClick={handleOpenAdd}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 transition-all w-full md:w-auto justify-center active:scale-95"
+          className="bg-primary-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all w-full md:w-auto justify-center active:scale-95"
         >
           <Plus size={20} /> Add New Service
         </button>
@@ -110,16 +110,16 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
             <div 
               key={item.id} 
               onClick={() => handleOpenEdit(item)}
-              className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:border-indigo-400 dark:hover:border-indigo-600 hover:shadow-xl hover:shadow-indigo-500/5 transition-all cursor-pointer group relative"
+              className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-xl hover:shadow-primary-500/5 transition-all cursor-pointer group relative"
             >
               <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
                       {item.type === 'Recurring' ? <RefreshCw size={24} /> : <Package size={24} />}
                   </div>
                   <div className="flex items-center gap-4">
                       <div className="text-right">
                           <div className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Net Margin</div>
-                          <div className={`font-black text-sm ${margin > 50 ? 'text-emerald-600' : margin > 20 ? 'text-indigo-600 dark:text-indigo-400' : 'text-amber-600 dark:text-amber-500'}`}>
+                          <div className={`font-black text-sm ${margin > 50 ? 'text-emerald-600' : margin > 20 ? 'text-primary-600 dark:text-primary-400' : 'text-amber-600 dark:text-amber-500'}`}>
                             {margin}%
                           </div>
                       </div>
@@ -139,8 +139,8 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
               
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                   <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{item.name}</h3>
-                   {item.type === 'Recurring' && <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-[9px] font-black uppercase rounded border border-indigo-100 dark:border-indigo-800">Contract</span>}
+                   <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{item.name}</h3>
+                   {item.type === 'Recurring' && <span className="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-300 text-[9px] font-black uppercase rounded border border-primary-100 dark:border-primary-800">Contract</span>}
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 line-clamp-2 font-medium">{item.description}</p>
                 {item.type === 'Recurring' && (
@@ -171,7 +171,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                   </div>
               </div>
               
-              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 p-2 rounded-lg">
+              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-primary-50 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 p-2 rounded-lg">
                 <Edit3 size={14} />
               </div>
             </div>
@@ -192,7 +192,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10">
               <div className="flex items-center gap-4">
-                <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg">
+                <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg">
                   {isEditing ? <Edit3 size={24} /> : <Plus size={24} />}
                 </div>
                 <div>
@@ -213,7 +213,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                     <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Service Identity</label>
                     <input 
                       type="text" 
-                      className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 dark:focus:ring-indigo-900/30 bg-white dark:bg-slate-800 transition-all font-bold text-slate-800 dark:text-slate-100"
+                      className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-50 dark:focus:ring-primary-900/30 bg-white dark:bg-slate-800 transition-all font-bold text-slate-800 dark:text-slate-100"
                       placeholder="e.g. Muscat Elite NFC Card"
                       value={currentSvc.name}
                       onChange={(e) => setCurrentSvc({...currentSvc, name: e.target.value})}
@@ -235,7 +235,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                 <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Service Description</label>
                     <textarea 
-                      className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-indigo-50 dark:focus:ring-indigo-900/30 bg-white dark:bg-slate-800 transition-all h-24 text-slate-600 dark:text-slate-300 leading-relaxed font-medium"
+                      className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-4 focus:ring-primary-50 dark:focus:ring-primary-900/30 bg-white dark:bg-slate-800 transition-all h-24 text-slate-600 dark:text-slate-300 leading-relaxed font-medium"
                       placeholder="Detail the technical specifications and delivery scope..."
                       value={currentSvc.description}
                       onChange={(e) => setCurrentSvc({...currentSvc, description: e.target.value})}
@@ -249,7 +249,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase">OMR</div>
                           <input 
                             type="number" 
-                            className="w-full pl-16 pr-4 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm font-black text-xl text-indigo-600 dark:text-indigo-400 focus:ring-4 focus:ring-indigo-500/10 outline-none"
+                            className="w-full pl-16 pr-4 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm font-black text-xl text-primary-600 dark:text-primary-400 focus:ring-4 focus:ring-primary-500/10 outline-none"
                             value={currentSvc.basePrice}
                             step="0.1"
                             onChange={(e) => setCurrentSvc({...currentSvc, basePrice: parseFloat(e.target.value) || 0})}
@@ -298,9 +298,9 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                     </div>
                 </div>
 
-                <div className="bg-indigo-50 dark:bg-indigo-900/30 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-800 flex items-start gap-4">
-                  <Info className="text-indigo-400 dark:text-indigo-300 shrink-0" size={20} />
-                  <div className="text-sm text-indigo-900 dark:text-indigo-100 leading-relaxed font-medium">
+                <div className="bg-primary-50 dark:bg-primary-900/30 p-6 rounded-3xl border border-primary-100 dark:border-primary-800 flex items-start gap-4">
+                  <Info className="text-primary-400 dark:text-primary-300 shrink-0" size={20} />
+                  <div className="text-sm text-primary-900 dark:text-primary-100 leading-relaxed font-medium">
                     <span className="font-black">Financial Projection:</span> This service will have a total base cost of 
                     <span className="font-black"> {formatMoney((currentSvc.unitCost || 0) + (currentSvc.programmingCost || 0), 'OMR')}</span>.
                     {currentSvc.type === 'Recurring' ? 
@@ -315,7 +315,7 @@ const CatalogView: React.FC<Props> = ({ catalog, setCatalog, formatMoney }) => {
                 <button onClick={() => setShowModal(false)} className="px-8 py-4 font-black uppercase tracking-widest text-xs text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all">Discard</button>
                 <button 
                   onClick={handleSave} 
-                  className="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 transition-all active:scale-95"
+                  className="bg-primary-600 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-700 shadow-xl shadow-primary-500/30 transition-all active:scale-95"
                 >
                   {isEditing ? 'Update Service' : 'Commit to Catalog'}
                 </button>

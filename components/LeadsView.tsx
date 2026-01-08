@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { Lead, Salesperson, SalespersonType, Permission } from '../types';
 import { 
@@ -53,7 +52,6 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
     status: 'Potential'
   });
 
-  // Automatically bind leads to the current agent for restricted roles
   useEffect(() => {
     if (showAddModal && isSalesRole && currentSalesperson && !editingLeadId) {
       setNewLead(prev => ({ ...prev, salespersonId: currentSalesperson.id }));
@@ -95,7 +93,6 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
       newErrors.phone = 'Invalid mobile number length';
     }
 
-    // Safety: If an agent role is logging in but no Matrix Profile found
     if (isSalesRole && !currentSalesperson) {
        alert("SECURITY ALERT: Your agent profile is not configured in the Sales Matrix. Please contact the administrator to register your email in the 'Sales Matrix' team list before logging leads.");
        return false;
@@ -124,7 +121,6 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
   const handleSaveLead = () => {
     if (!validateForm()) return;
     
-    // STRICT ASSIGNMENT: If user is an agent, we FORCE their ID to avoid "vanishing" leads
     const finalSalespersonId = isSalesRole && currentSalesperson ? currentSalesperson.id : (newLead.salespersonId || '');
 
     const leadData = {
@@ -140,8 +136,6 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
         id: Math.random().toString(36).substr(2, 9),
         status: 'Potential'
       };
-      // FIX: Use functional state update 'prev =>' to preserve all leads in the system,
-      // not just the ones currently visible in the filtered list.
       setLeads(prev => [lead, ...prev]);
     }
 
@@ -201,8 +195,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
   };
 
   const getTeamLeadsPerformance = () => {
-    const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-    // Managers see everyone, agents see only themselves
+    const currentMonth = new Date().toISOString().slice(0, 7);
     const displayTeam = isSalesRole && currentSalesperson ? [currentSalesperson] : team;
     
     return displayTeam.map(member => {
@@ -222,40 +215,38 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-12">
-      {/* Target Dashboard */}
       <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
         <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
           <div className="flex-1 space-y-4">
             <div className="flex items-center gap-4">
-               <div className="bg-indigo-600 p-4 rounded-3xl shadow-xl">
+               <div className="bg-primary-600 p-4 rounded-3xl shadow-xl">
                   <Target size={32} className="text-white" />
                </div>
                <div>
                   <h2 className="text-3xl font-black tracking-tight">Visit Intelligence</h2>
-                  <p className="text-indigo-200 font-medium">Real-time tracking of salesperson field activity vs. monthly quotas.</p>
+                  <p className="text-primary-200 font-medium">Real-time tracking of salesperson field activity vs. monthly quotas.</p>
                </div>
             </div>
           </div>
           <button 
             onClick={() => { setEditingLeadId(null); setShowAddModal(true); }}
-            className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all flex items-center gap-3 shadow-xl active:scale-95"
+            className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-primary-50 transition-all flex items-center gap-3 shadow-xl active:scale-95"
           >
             <Plus size={20} /> Log Field Visit
           </button>
         </div>
 
-        {/* Performance Strips */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
           {performance.map(member => (
             <div key={member.id} className="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/5 space-y-4">
                <div className="flex justify-between items-center">
-                  <div className="text-xs font-black uppercase tracking-widest text-indigo-300">{member.name}</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-primary-300">{member.name}</div>
                   <div className="text-[10px] font-black uppercase text-white/40">{member.leadsCount} / {member.target} Leads</div>
                </div>
                <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
                   <div 
-                    className={`h-full transition-all duration-1000 ${member.leadsCount >= member.target ? 'bg-emerald-400' : 'bg-indigo-50'}`}
+                    className={`h-full transition-all duration-1000 ${member.leadsCount >= member.target ? 'bg-emerald-400' : 'bg-primary-50'}`}
                     style={{ width: `${Math.min(100, (member.leadsCount / (member.target || 1)) * 100)}%` }}
                   />
                </div>
@@ -279,7 +270,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
           <input 
             type="text" 
             placeholder="Search leads..." 
-            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium dark:text-white"
+            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all font-medium dark:text-white"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -302,7 +293,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                  <tr key={lead.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                     <td className="px-8 py-5">
                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-primary-600 group-hover:text-white transition-all">
                              <Building2 size={20} />
                           </div>
                           <div>
@@ -313,7 +304,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                     </td>
                     <td className="px-8 py-5">
                        <div className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300">
-                          <User size={14} className="text-indigo-500" />
+                          <User size={14} className="text-primary-500" />
                           {team.find(t => t.id === lead.salespersonId)?.name || 'Unknown Agent'}
                        </div>
                     </td>
@@ -328,7 +319,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase border tracking-widest ${
                             lead.status === 'Converted' 
                               ? 'bg-emerald-100 text-emerald-700 border-emerald-200' 
-                              : 'bg-indigo-100 text-indigo-700 border-indigo-200'
+                              : 'bg-primary-100 text-primary-700 border-primary-200'
                           }`}>
                              {lead.status}
                           </span>
@@ -338,7 +329,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                           <button 
                             onClick={() => handleEditLead(lead)}
-                            className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            className="p-2 text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                             title="View/Edit Details"
                           >
                              <ArrowUpRight size={18} />
@@ -371,7 +362,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-10">
               <div className="flex items-center gap-4">
-                <div className="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg">
+                <div className="bg-primary-600 text-white p-3 rounded-2xl shadow-lg">
                   {editingLeadId ? <Edit3 size={24} /> : <MapPinned size={24} />}
                 </div>
                 <div>
@@ -405,7 +396,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                      <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${errors.companyName ? 'text-red-500' : 'text-slate-400'}`}>Entity Identity</label>
                      <input 
                        type="text"
-                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-bold dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all ${errors.companyName ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
+                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-bold dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all ${errors.companyName ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
                        placeholder="Corporate Company Name"
                        value={newLead.companyName}
                        onChange={e => {
@@ -419,7 +410,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                      <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${errors.contactPerson ? 'text-red-500' : 'text-slate-400'}`}>Contact Principal</label>
                      <input 
                        type="text"
-                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all ${errors.contactPerson ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
+                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all ${errors.contactPerson ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
                        placeholder="Point of Contact Name"
                        value={newLead.contactPerson}
                        onChange={e => {
@@ -438,7 +429,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                      </label>
                      <input 
                        type="email"
-                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all ${errors.email ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
+                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all ${errors.email ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
                        placeholder="contact@email.com"
                        value={newLead.email}
                        onChange={e => {
@@ -454,7 +445,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                      </label>
                      <input 
                        type="tel"
-                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all ${errors.phone ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
+                       className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all ${errors.phone ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
                        placeholder="+968 XXXX XXXX"
                        value={newLead.phone}
                        onChange={e => {
@@ -473,7 +464,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                   <div className="flex gap-2">
                     <input 
                       type="text"
-                      className="flex-1 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                      className="flex-1 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-medium dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all"
                       placeholder="Coordinates or physical address..."
                       value={newLead.address}
                       onChange={e => setNewLead({...newLead, address: e.target.value})}
@@ -481,7 +472,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                     <button 
                       onClick={handleAutoLocate}
                       disabled={isLocating}
-                      className="p-4 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-2xl border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-all shadow-sm flex items-center justify-center shrink-0 min-w-[56px]"
+                      className="p-4 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-2xl border border-primary-100 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all shadow-sm flex items-center justify-center shrink-0 min-w-[56px]"
                       title="Auto-locate coordinates"
                     >
                       {isLocating ? <Loader2 className="animate-spin" size={20} /> : <LocateFixed size={20} />}
@@ -531,11 +522,11 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                       <CalendarDays size={12} className="text-indigo-500" /> Follow-up Date (Optional)
+                       <CalendarDays size={12} className="text-primary-500" /> Follow-up Date (Optional)
                      </label>
                      <input 
                        type="date"
-                       className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                       className="w-full p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold dark:text-white outline-none focus:ring-4 focus:ring-primary-500/10 transition-all"
                        value={newLead.followUpDate}
                        onChange={e => setNewLead({...newLead, followUpDate: e.target.value})}
                      />
@@ -550,7 +541,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                <div className="space-y-1">
                   <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${errors.visitDetails ? 'text-red-500' : 'text-slate-400'}`}>Visit Narrative</label>
                   <textarea 
-                    className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium h-32 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all ${errors.visitDetails ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
+                    className={`w-full p-4 rounded-2xl border bg-white dark:bg-slate-800 font-medium h-32 outline-none focus:ring-4 focus:ring-primary-500/10 transition-all ${errors.visitDetails ? 'border-red-500 bg-red-50/50' : 'border-slate-200 dark:border-slate-700'}`}
                     placeholder="Log technical requirements, pain points, and strategic opening..."
                     value={newLead.visitDetails}
                     onChange={e => {
@@ -567,7 +558,7 @@ const LeadsView: React.FC<Props> = ({ leads, setLeads, team, hasPermission, isSa
                <button 
                  onClick={handleSaveLead}
                  disabled={isSalesRole && !currentSalesperson}
-                 className="bg-indigo-600 text-white px-12 py-3 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 active:scale-95 transition-all disabled:opacity-50"
+                 className="bg-primary-600 text-white px-12 py-3 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-primary-700 shadow-xl shadow-primary-600/30 active:scale-95 transition-all disabled:opacity-50"
                >
                  {editingLeadId ? 'Update Record' : 'Register Lead'}
                </button>
