@@ -18,30 +18,40 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
       - name: Copy project to Hostinger
-        # env:
-        #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        env:
+          SSHPASS: "8K?M-sJCW'?E7m7-D?9t-"
         run: |
-          sshpass -p "8K?M-sJCW'\''?E7m7-D?9t-" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
+          # Using -e reads the password from the SSHPASS variable above, preventing syntax errors
+          sshpass -e rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
+
       - name: Run deployment script on Hostinger
-        # env:
-        #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        env:
+          SSHPASS: "8K?M-sJCW'?E7m7-D?9t-"
         run: |
-          sshpass -p "8K?M-sJCW'\''?E7m7-D?9t-" ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
+          sshpass -e ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
             
+            # 1. Load NVM and PM2 environment
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             export PATH="$HOME/.pm2/bin:$PATH"
 
+            # 2. Navigate to folder
+            # (Make sure this matches the path used in the rsync step above)
             cd /root/site-prod/AbdulRahman-Alsemry
 
+            # 3. Install Dependencies
             npm i
 
+            # 4. Copy Config Files (Your request)
+            # Copies all files from /root/file/ into the current app folder
             echo "Copying configuration files..."
-            cp -r /root/file/. .
-           
+            cp -r /root/files/. .
+
+            # 5. Build the application
             npm run build
 
+            # 6. Restart PM2
             pm2 restart app
             
-            echo "Application is now live on port 4173!"
+            echo "Deployment finished successfully."
           EOF
