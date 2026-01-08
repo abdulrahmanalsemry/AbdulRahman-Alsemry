@@ -19,14 +19,14 @@ jobs:
 
       - name: Copy project to Hostinger
         env:
-          SSHPASS: "8K?M-sJCW'?E7m7-D?9t-"
+          SSHPASS: "wuhkydwoqG1@"
         run: |
           # Using -e reads the password from the SSHPASS variable above, preventing syntax errors
           sshpass -e rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
 
       - name: Run deployment script on Hostinger
         env:
-          SSHPASS: "8K?M-sJCW'?E7m7-D?9t-"
+          SSHPASS: "wuhkydwoqG1@"
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
             
