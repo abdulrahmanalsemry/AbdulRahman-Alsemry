@@ -4,6 +4,7 @@ import { Quote, Invoice, OperationalExpense, Salesperson } from '../types';
 import { getBusinessInsights } from '../services/geminiService';
 import { BrainCircuit, Sparkles, RefreshCcw, TrendingUp, AlertTriangle, Lightbulb, CheckCircle2, ChevronRight } from 'lucide-react';
 
+
 interface Props {
   quotes: Quote[];
   invoices: Invoice[];
