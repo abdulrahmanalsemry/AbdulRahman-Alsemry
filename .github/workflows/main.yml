@@ -1,0 +1,47 @@
+name: Deploy to Hosting Server
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  deploy:
+    name: Deploy to Hostinger Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Copy project to Hostinger
+        # env:
+        #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "8K?M-sJCW'?E7m7-D?9t-" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
+      - name: Run deployment script on Hostinger
+        # env:
+        #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "8K?M-sJCW'?E7m7-D?9t-" ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
+            
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            export PATH="$HOME/.pm2/bin:$PATH"
+
+            cd /root/site-prod/AbdulRahman-Alsemry
+
+            npm i
+
+            echo "Copying configuration files..."
+            cp -r /root/file/. .
+           
+            npm run build
+
+            pm2 restart app
+            
+            echo "Application is now live on port 4173!"
+          EOF
