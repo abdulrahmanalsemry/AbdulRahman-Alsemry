@@ -40,12 +40,13 @@ jobs:
             cd /root/site-prod/AbdulRahman-Alsemry
 
             # 3. Install Dependencies
-            npm i
+          
 
             # 4. Copy Config Files (Your request)
             # Copies all files from /root/file/ into the current app folder
             echo "Copying configuration files..."
             cp -r /root/files/. .
+            npm i
 
             # 5. Build the application
             npm run build
