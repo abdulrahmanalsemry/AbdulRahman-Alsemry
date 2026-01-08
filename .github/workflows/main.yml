@@ -21,12 +21,12 @@ jobs:
         # env:
         #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "8K?M-sJCW'?E7m7-D?9t-" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
+          sshpass -p "8K?M-sJCW'\''?E7m7-D?9t-" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
       - name: Run deployment script on Hostinger
         # env:
         #   SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "8K?M-sJCW'?E7m7-D?9t-" ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
+          sshpass -p "8K?M-sJCW'\''?E7m7-D?9t-" ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
             
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
