@@ -22,13 +22,13 @@ jobs:
           SSHPASS: "wuhkydwoqG1@"
         run: |
           # Using -e reads the password from the SSHPASS variable above, preventing syntax errors
-          sshpass -e rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.151.109:/root/site-prod/AbdulRahman-Alsemry
+          sshpass -e rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ root@72.62.194.172:/root/site-prod/AbdulRahman-Alsemry
 
       - name: Run deployment script on Hostinger
         env:
           SSHPASS: "wuhkydwoqG1@"
         run: |
-          sshpass -e ssh -o StrictHostKeyChecking=no root@72.62.151.109 << 'EOF'
+          sshpass -e ssh -o StrictHostKeyChecking=no root@72.62.194.172 << 'EOF'
             
             # 1. Load NVM and PM2 environment
             export NVM_DIR="$HOME/.nvm"
