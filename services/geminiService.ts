@@ -8,7 +8,7 @@ export const getBusinessInsights = async (
   expenses: OperationalExpense[],
   team: Salesperson[]
 ) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY, });
   
   const approvedQuotes = quotes.filter(q => q.status === 'Approved');
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
